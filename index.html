@@ -1,0 +1,67 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#10141c">
+<meta name="description" content="Your personal gym workout and progress tracker.">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" href="icon.svg" type="image/svg+xml">
+<title>GYMLOG — Training Tracker</title>
+<style>
+:root{color-scheme:dark;--bg:#10141c;--card:#191f2a;--panel:#222b38;--line:#303b4b;--text:#f4f6fa;--muted:#9ca9ba;--accent:#a3e635;--accentText:#111827}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--text);font:15px system-ui,-apple-system,Segoe UI,sans-serif}
+button,input,textarea,select{font:inherit}button{cursor:pointer;color:inherit}
+.app{max-width:760px;margin:auto;padding:env(safe-area-inset-top) 15px calc(24px + env(safe-area-inset-bottom))}
+header{display:flex;justify-content:space-between;align-items:center;padding:20px 0 15px}.brand{font-size:25px;font-weight:950;letter-spacing:-1px}.brand span{color:var(--accent)}.eyebrow{font-size:10px;letter-spacing:2px;color:var(--muted);font-weight:800}
+.panel,.exercise{background:var(--card);border:1px solid var(--line);border-radius:15px;padding:14px}.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:9px}.stat strong{display:block;font-size:24px}.muted{color:var(--muted)}.tiny{font-size:12px}
+nav{display:flex;gap:7px;margin:17px 0 13px;border-bottom:1px solid var(--line);padding-bottom:10px}.tab,.day{border:1px solid var(--line);background:var(--card);border-radius:10px;padding:9px 12px;font-weight:700;font-size:13px}.tab.active,.day.active{background:#29351b;border-color:var(--accent);color:var(--accent)}
+.days{display:flex;gap:7px;overflow-x:auto;padding:2px 0 10px}.day{min-width:64px}.day small{display:block;color:var(--muted);font-size:10px;margin-top:2px}
+.heading{display:flex;justify-content:space-between;gap:10px;align-items:center}.heading h2{font-size:19px;margin:0}.bar{height:7px;background:var(--panel);border-radius:10px;overflow:hidden;margin-top:12px}.bar div{height:100%;background:var(--accent);width:0}
+.exercise{margin-top:10px}.exercise-title{display:flex;justify-content:space-between;gap:8px;font-weight:750;font-size:14px}.range{font-size:11px;color:var(--muted);white-space:nowrap}
+.set{display:grid;grid-template-columns:25px 1fr 1fr 64px;gap:7px;align-items:end;padding:9px 0 0}.setnum{align-self:center;font-size:12px;color:var(--muted);font-weight:800}.fieldlabel{font-size:10px;color:var(--muted);display:block;margin:0 0 4px 2px}.field{width:100%;min-width:0;border:1px solid var(--line);border-radius:8px;background:var(--panel);color:var(--text);padding:9px 5px;text-align:center;font-size:14px}.check{display:flex;align-items:center;justify-content:center;gap:4px;font-size:11px;padding-bottom:9px}.check input{accent-color:var(--accent);width:17px;height:17px}
+.actions{display:flex;gap:8px;margin:15px 0}.btn{border:1px solid var(--line);background:var(--panel);border-radius:10px;padding:11px 13px;font-weight:700}.primary{background:var(--accent);color:var(--accentText);border-color:var(--accent);flex:1}
+button:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.hidden{display:none!important}.resticon{font-size:35px}.historyitem{margin-top:9px}.historyitem summary{cursor:pointer;font-weight:700}.historyitem p{font-size:12px;color:var(--muted);line-height:1.7}
+select,textarea{background:var(--panel);color:var(--text);border:1px solid var(--line);border-radius:9px;padding:10px;width:100%}
+footer{text-align:center;color:var(--muted);font-size:11px;padding:15px}
+@media(min-width:600px){.app{padding-left:22px;padding-right:22px}.set{grid-template-columns:35px 1fr 1fr 80px}}
+</style>
+</head>
+<body>
+<div class="app">
+<header><div><div class="eyebrow">YOUR PERSONAL TRAINING LOG</div><div class="brand">GYM<span>LOG</span></div><div class="tiny muted">Train. Record. Progress.</div></div><div style="text-align:right"><div class="eyebrow">WORKOUT CYCLE</div><strong id="cycle">DAY 1 / 8</strong></div></header>
+<div class="stats">
+ <div class="panel stat"><div class="tiny muted">Workouts</div><strong id="total">0</strong><div class="tiny muted">completed</div></div>
+ <div class="panel stat"><div class="tiny muted">Sets done</div><strong id="setsdone">0</strong><div class="tiny muted">all time</div></div>
+ <div class="panel stat"><div class="tiny muted">Exercises</div><strong id="excount">0</strong><div class="tiny muted">in routine</div></div>
+</div>
+<nav><button class="tab active" data-tab="workout">Workout</button><button class="tab" data-tab="progress">Progress</button><button class="tab" data-tab="history">History</button></nav>
+<section id="workoutView">
+ <div class="days" id="days"></div>
+ <div class="panel">
+  <div class="heading"><div><h2 id="dayname">PUSH + TRICEPS</h2><div id="daymeta" class="tiny muted">6 exercises</div></div><strong id="percent">0%</strong></div>
+  <div class="bar"><div id="progressbar"></div></div>
+ </div>
+ <div id="exerciseList"></div>
+ <div id="restPanel" class="panel hidden" style="margin-top:10px">
+  <div class="resticon">🧘</div><h2 style="margin:5px 0">Recovery day</h2><p class="muted">Light cardio · 10 minutes per machine. Recover and prepare for your next workout.</p>
+  <label><input id="cardio" type="checkbox"> Cardio completed</label>
+  <textarea id="restnote" rows="2" placeholder="Notes: machines, duration, how you feel..." style="margin-top:12px"></textarea>
+ </div>
+ <div class="actions"><button class="btn" id="reset">Reset checks</button><button class="btn primary" id="finish">Finish workout ✓</button></div>
+ <div class="actions"><button class="btn" id="prev">← Previous day</button><button class="btn" id="next" style="margin-left:auto">Next day →</button></div>
+ <p class="tiny muted" style="text-align:center">Your changes save automatically on this device.</p>
+</section>
+<section id="progressView" class="hidden">
+ <div class="panel"><h3 style="margin-top:0">Exercise progress</h3><p class="tiny muted">Compare your logged sets across sessions.</p><select id="exerciseSelect"></select><div id="progressDetails" style="margin-top:15px"></div></div>
+ <div class="panel" style="margin-top:10px"><h3 style="margin-top:0">Training statistics</h3><div id="stats" class="tiny muted"></div></div>
+</section>
+<section id="historyView" class="hidden">
+ <div class="heading"><h3>Workout history</h3><button class="btn" id="export">Export backup ↓</button></div><div id="historyList"></div>
+ <button class="btn" id="clearHistory" style="margin-top:12px">Clear workout history</button>
+</section>
+<footer>GYMLOG · Your training, your progress.</footer>
+</div>
+<script src="app.js"></script>
+</body></html>
