@@ -1,12 +1,12 @@
 {
   "id": "./",
-  "name": "GYMLOG — Training Tracker",
+  "name": "GYMLOG — Train with intent.",
   "short_name": "GYMLOG",
-  "description": "Your personal gym workout and progress tracker.",
+  "description": "Premium strength training and progress tracker.",
   "start_url": "./",
   "scope": "./",
   "display": "standalone",
-  "background_color": "#10141c",
+  "background_color": "#0b0e12",
   "theme_color": "#10141c",
   "orientation": "portrait",
   "icons": [
