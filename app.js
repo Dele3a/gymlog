@@ -16,7 +16,7 @@ let state={};try{state=JSON.parse(localStorage.getItem(KEY)||'{}')}catch(e){}sta
 const uid=()=>Math.random().toString(36).slice(2,10);
 function normalizeDays(input){
  return input.map((d,di)=>({id:d.id||('day'+di+'_'+uid()),name:d.name||'WORKOUT',rest:!!d.rest,items:(d.items||[]).map((x,ei)=>{
-  if(Array.isArray(x))return {id:'ex'+di+'_'+ei+'_'+uid(),name:x[0],sets:+x[1]||3,min:+x[2]||8,max:+x[3]||12,initial:x[4]||[],muscle:x[6]||'Other',equipment:x[7]||'Other',unit:x[5]==='sec'?'sec':'reps',superset:x[6]&&x[7]?x[7]:'',rest:90};
+  if(Array.isArray(x))return {id:'ex'+di+'_'+ei+'_'+uid(),name:x[0],sets:+x[1]||3,min:+x[2]||8,max:+x[3]||12,initial:x[4]||[],muscle:x[5]||'Other',equipment:x[6]||'Other',unit:x[7]==='sec'?'sec':'reps',superset:'',rest:90};
   return {id:x.id||uid(),name:x.name||'Exercise',sets:+x.sets||3,min:+x.min||8,max:+x.max||12,initial:x.initial||[],muscle:x.muscle||'Other',equipment:x.equipment||'Other',unit:x.unit||'reps',superset:x.superset||'',rest:+x.rest||90};
  })}));
 }
@@ -45,6 +45,7 @@ function render(){
 }
 function countDistinct(){return new Set(allExercises().map(x=>x.name)).size}
 function renderToday(){
+ const week=$('weekBars'),now=new Date(),weekData=[];for(let i=6;i>=0;i--){const dt=new Date(now);dt.setDate(now.getDate()-i);const keyDate=dt.toDateString();const n=state.history.filter(h=>new Date(h.timestamp||h.date).toDateString()===keyDate).length;weekData.push({label:dt.toLocaleDateString(undefined,{weekday:'short'}).slice(0,2),n})}const maxWeek=Math.max(1,...weekData.map(x=>x.n));week.innerHTML=weekData.map(x=>'<div class="week-col"><div class="week-bar '+(x.n?'active':'')+'" style="height:'+Math.max(4,x.n/maxWeek*90)+'px"></div><span class="week-day">'+x.label+'</span></div>').join('');
  const d=days[day],items=d.items||[],completed=items.reduce((a,x,e)=>a+Array.from({length:x.sets},(_,i)=>getSet(day,e,i).done?1:0).reduce((p,v)=>p+v,0),0),total=items.reduce((a,x)=>a+x.sets,0);
  $('todayTitle').textContent=d.rest?'Recovery day':d.name;$('todaySub').textContent=d.rest?'Take the time to recover.':items.length+' exercises · '+total+' working sets';$('todayPercent').textContent=(total?Math.round(completed/total*100):0)+'%';$('todayBar').style.width=(total?completed/total*100:0)+'%';
  $('todayExercises').innerHTML=d.rest?'<div class="empty-inline">Rest day. Light movement, hydration and recovery.</div>':items.slice(0,4).map(x=>'<div class="mini-ex"><span>'+escapeHtml(x.name)+'</span><span>'+x.sets+' sets</span></div>').join('')+(items.length>4?'<div class="tiny muted">+'+(items.length-4)+' more exercises</div>':'');
