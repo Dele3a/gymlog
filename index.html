@@ -38,6 +38,95 @@
 @media(min-width:761px){.bottom-nav{display:none}.app{padding-bottom:50px}}
 
 .muscle-row{display:grid;grid-template-columns:100px 1fr 44px;gap:10px;align-items:center;padding:8px 0;border-bottom:1px solid #ffffff0c;font-size:11px}.muscle-track{height:8px;background:var(--surface3);border-radius:8px;overflow:hidden}.muscle-track span{display:block;height:100%;background:var(--accent);border-radius:8px}.measurement-row{display:flex;justify-content:space-between;gap:12px;padding:10px 0;border-bottom:1px solid #ffffff0c;font-size:11px}.measurement-row span{color:var(--muted)}
+
+/* V5.1 — modern athletic interface */
+:root{color-scheme:dark;--bg:#080b0f;--surface:#10161d;--surface2:#171f28;--surface3:#202b36;--line:#273440;--text:#f5f7f8;--muted:#8d9aa7;--accent:#c8ff55;--accent2:#a8df38;--good:#75ddb0;--danger:#ff8585;--radius:20px;--shadow:0 18px 50px #0005}
+body{background:radial-gradient(ellipse at 50% -25%,#1d2b1b 0,transparent 48%),var(--bg);font-size:14px;letter-spacing:0}
+.app{max-width:1180px;padding:0 28px 112px}
+.topbar{height:82px;border-bottom-color:#ffffff12;background:#080b0fe8}
+.brand-mark{height:40px;width:40px;border-radius:13px;background:var(--accent);box-shadow:0 0 28px #c8ff5526}
+.brand{font-size:20px;letter-spacing:1.8px}.brand-caption{font-size:9px;letter-spacing:2.4px}
+.avatar{border-radius:13px;width:40px;height:40px;background:#c8ff5512;border-color:#c8ff5533}
+.page{padding-top:36px}.page-head{margin-bottom:26px}
+.eyebrow{letter-spacing:2.2px;font-size:10px}
+.page-head h1{font-size:clamp(32px,5vw,46px);letter-spacing:-1.8px;font-weight:850}
+.page-head p{font-size:13px}
+.btn{border-radius:12px;padding:11px 15px;font-size:12px;transition:background .18s,border-color .18s,transform .18s}
+.btn.primary{box-shadow:0 6px 22px #c8ff551a;font-weight:850}
+.btn.primary:hover{background:#d6ff7d;border-color:#d6ff7d}
+.card,.stat-card{border-radius:22px;border-color:#ffffff12;box-shadow:0 16px 42px #0002;background:linear-gradient(145deg,#131b23,#0e141b)}
+.stat-card{padding:19px;min-height:126px}
+.stat-top{font-size:10px;letter-spacing:1.2px;font-weight:800}
+.stat-icon{width:31px;height:31px;border-radius:10px;background:#c8ff5515}
+.stat-value{font-size:31px;letter-spacing:-1.5px;margin-top:13px}
+.stat-foot{font-size:10px}
+.stats-grid{gap:14px;margin-bottom:20px}
+.home-grid{gap:16px}
+.card{padding:22px}
+.card-head{margin-bottom:18px}
+.card-head h2,.card-head h3{font-size:16px;font-weight:800}
+.today-card{background:linear-gradient(125deg,#17251a,#10171c 65%);border-color:#c8ff552b}
+.today-top h2{font-size:27px;letter-spacing:-1px}
+.percent-ring{height:66px;width:66px}
+.progress-track{height:6px}
+.nav{border-bottom-color:#ffffff12;margin-top:18px}
+.nav button{padding:13px 17px;font-size:12px}
+.nav button.active{color:var(--accent)}
+.day-tabs{gap:9px;padding-bottom:18px}
+.day-pill{border-radius:14px;padding:11px 14px;background:#111820}
+.day-pill.selected{background:#c8ff5514;border-color:#c8ff55}
+.workout-head h2{font-size:24px;letter-spacing:-.8px}
+.lift-card{border-radius:19px;padding:18px;background:linear-gradient(145deg,#131b23,#0e141a);border-color:#ffffff13}
+.lift-head h3{font-size:16px;font-weight:800}
+.set-head{font-size:9px}
+.set-row input[type=number]{border-radius:10px;padding:11px 5px;background:#0b1117;border-color:#ffffff16}
+.done-toggle span{border-radius:8px}
+.coach-note{border-radius:12px;background:#c8ff550d;border-color:#c8ff5525}
+.workout-footer{border-radius:17px;background:#111820ed;border-color:#ffffff1b;box-shadow:0 12px 34px #0005}
+.searchbox{border-radius:14px;padding:14px 16px;background:var(--surface);border-color:#ffffff17}
+.filter-chip{padding:8px 14px}
+.library-item{padding:15px 4px}
+.lib-icon{width:42px;height:42px;border-radius:13px}
+.analytics-card{min-height:100px}
+.history-card{border-radius:16px;background:var(--surface);border-color:#ffffff12}
+.settings-list{padding:20px 22px}
+.setting-row{padding:16px 0}
+.bottom-nav{background:#0b1118f2;border-top-color:#ffffff18;backdrop-filter:blur(22px)}
+.bottom-nav button{font-size:9px;font-weight:750;min-width:54px}
+.bottom-nav button span{font-size:19px}
+.bottom-nav button.active{color:var(--accent)}
+.toast{border-radius:13px;box-shadow:0 10px 28px #0005}
+.light-theme{--bg:#f2f5f3;--surface:#fff;--surface2:#edf2ee;--surface3:#e2e9e3;--line:#d8e1d9;--text:#172019;--muted:#66756a;--accent:#609b19;--accent2:#4f8513;--shadow:0 10px 28px #15201a0d}
+.light-theme body{background:var(--bg)}
+.light-theme .topbar{background:#f2f5f3ed}
+.light-theme .stat-card,.light-theme .card,.light-theme .lift-card{background:#fff}
+.light-theme .today-card{background:linear-gradient(125deg,#f0f8e8,#fff)}
+.light-theme .set-row input[type=number]{background:#f7faf7}
+.light-theme .bottom-nav{background:#ffffffed}
+@media(max-width:760px){
+ .app{padding:0 16px 112px}
+ .topbar{height:70px}
+ .page{padding-top:27px}
+ .page-head{margin-bottom:21px}
+ .page-head h1{font-size:34px;letter-spacing:-1.3px}
+ .stats-grid{gap:10px}
+ .stat-card{padding:14px;min-height:112px;border-radius:17px}
+ .stat-value{font-size:26px}
+ .home-grid{gap:12px}
+ .card{padding:17px;border-radius:19px}
+ .today-top h2{font-size:23px}
+ .today-card:after{right:-85px}
+ .analytics-grid{gap:7px}
+ .analytics-card{padding:12px 9px;min-height:88px}
+ .analytics-card strong{font-size:18px}
+ .workout-head{gap:10px}
+ .lift-card{padding:14px;border-radius:17px}
+ .workout-footer{bottom:80px}
+ .bottom-nav{padding:9px 6px calc(9px + env(safe-area-inset-bottom))}
+ .bottom-nav button{min-width:48px}
+}
+@media(min-width:761px){.bottom-nav{display:none}.app{padding-bottom:54px}}
+
 </style>
 </head>
 <body>
@@ -47,7 +136,7 @@
  <div class="top-right"><div class="date-label" id="topDate"></div><div class="avatar">GL</div></div>
 </header>
 <nav class="nav">
- <button class="active" data-tab="home">Overview</button><button data-tab="workout">Workout</button><button data-tab="library">Exercise library</button><button data-tab="progress">Analytics</button><button data-tab="history">History</button><button data-tab="settings">Settings</button>
+ <button class="active" data-tab="home">Home</button><button data-tab="workout">Train</button><button data-tab="library">Library</button><button data-tab="progress">Progress</button><button data-tab="settings">Profile</button>
 </nav>
 <main>
 <section id="homePage" class="page">
@@ -92,6 +181,7 @@
  <div class="card settings-list">
   <div class="setting-row"><div><b>Weight units</b><small>Convert saved weights between kilograms and pounds.</small></div><button class="btn setting-value" id="unitBtn"><span id="unitSetting">KG</span></button></div>
   <div class="setting-row"><div><b>Appearance</b><small>Switch between dark and light mode.</small></div><button class="btn setting-value" id="themeBtn"><span id="themeSetting">Dark</span></button></div>
+  <div class="setting-row"><div><b>Workout history</b><small>Review completed sessions and training logs.</small></div><button class="btn" data-tab="history">Open history</button></div>
   <div class="setting-row"><div><b>Export backup</b><small>Download your routine, history and logged sets.</small></div><button class="btn" id="exportBtn2">Export JSON</button></div>
   <div class="setting-row"><div><b>Restore backup</b><small>Restore a previous GYMLOG backup file.</small></div><label class="btn" for="importInput">Choose file</label><input id="importInput" type="file" accept="application/json" hidden></div>
   <div class="setting-row"><div><b>Clear workout history</b><small>Remove completed sessions. This cannot be undone.</small></div><button class="btn danger" id="clearHistory">Clear history</button></div>
@@ -101,7 +191,7 @@
 </main>
 </div>
 <nav class="bottom-nav">
- <button class="active" data-tab="home"><span>⌂</span>Home</button><button data-tab="workout"><span>▣</span>Train</button><button data-tab="library"><span>⌕</span>Library</button><button data-tab="progress"><span>↗</span>Progress</button><button data-tab="history"><span>◷</span>History</button><button data-tab="settings"><span>⚙</span>More</button>
+ <button class="active" data-tab="home"><span>⌂</span>Home</button><button data-tab="workout"><span>▣</span>Train</button><button data-tab="library"><span>⌕</span>Library</button><button data-tab="progress"><span>↗</span>Progress</button><button data-tab="settings"><span>◉</span>Profile</button>
 </nav>
 <div id="timerOverlay" class="timer-overlay hidden"><div class="timer-box"><div class="eyebrow">RECOVERY TIMER</div><h2>REST & RESET</h2><strong id="timerValue">1:30</strong><div class="timer-actions"><button class="btn" id="timerMinus">−15s</button><button class="btn" id="timerPlus">+15s</button><button class="btn primary" id="timerClose">Close</button></div></div></div>
 <div id="toast" class="toast"></div>
