@@ -134,6 +134,6 @@ if("serviceWorker" in navigator)window.addEventListener("load",()=>navigator.ser
  // Load previously customized routine while retaining the original logged set values.
  if(Array.isArray(state.routine)&&state.routine.length){days.splice(0,days.length,...state.routine)}
  const priorDraw=draw;
- draw=function(){priorDraw();toolbar();decorate();document.getElementById("cycle").textContent="DAY "+(day+1)+" / "+days.length;document.getElementById("excount").textContent=days.reduce((n,d)=>n+(d.items||[]).length,0);document.querySelectorAll("#exerciseList .fieldlabel").forEach(el=>{if(el.textContent.includes("WEIGHT"))el.textContent="WEIGHT ("+(state.settings?.unit||"kg").toUpperCase()+")"})};
+ draw=function(){priorDraw();toolbar();decorate();document.body.classList.toggle("light-mode",!!state.settings?.light);document.getElementById("cycle").textContent="DAY "+(day+1)+" / "+days.length;document.getElementById("excount").textContent=days.reduce((n,d)=>n+(d.items||[]).length,0);document.querySelectorAll("#exerciseList .fieldlabel").forEach(el=>{if(el.textContent.includes("WEIGHT"))el.textContent="WEIGHT ("+(state.settings?.unit||"kg").toUpperCase()+")"})};
  draw();
 })();
