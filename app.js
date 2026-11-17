@@ -173,42 +173,43 @@ function renderLibrary(){
  $('libraryList').querySelectorAll('[data-add]').forEach(b=>b.onclick=()=>addLibraryExercise(b.dataset.add));
 }
 
-function validWorkingSets(since=0){
+function completedWorkingSets(since=0){
  const out=[];
  state.history.forEach(h=>{
   const stamp=Number(h.timestamp)||new Date(h.date).getTime();
   if(!Number.isFinite(stamp)||stamp<since)return;
   (h.details||[]).forEach(x=>{
-   const routine=allExercises().find(e=>e.name===x.exercise);
-   const reps=Number(x.reps),weight=Number(x.weight);
-   if(!x.done||(x.setType||'working')!=='working'||!Number.isFinite(reps)||reps<1||!Number.isFinite(weight)||weight<=0||routine&&routine.unit==='sec'||routine&&routine.equipment==='Bodyweight')return;
-   out.push({exercise:x.exercise,muscle:x.muscle||(routine&&routine.muscle)||'Other',weight,reps,volume:weight*reps,timestamp:stamp,date:new Date(stamp),e1rm:reps<=10?weight*(1+reps/30):null});
+   const routine=allExercises().find(e=>e.name===x.exercise),reps=Number(x.reps),weight=Number(x.weight);
+   if(!x.done||(x.setType||'working')!=='working'||!Number.isFinite(reps)||reps<1||routine&&routine.unit==='sec')return;
+   const loaded=Number.isFinite(weight)&&weight>0&&!(routine&&routine.equipment==='Bodyweight');
+   out.push({exercise:x.exercise,muscle:x.muscle||(routine&&routine.muscle)||'Other',weight:loaded?weight:0,reps,loaded,volume:loaded?weight*reps:0,timestamp:stamp,date:new Date(stamp),e1rm:loaded&&reps<=10?weight*(1+reps/30):null});
   });
  });
  return out;
 }
+function validWorkingSets(since=0){return completedWorkingSets(since).filter(x=>x.loaded)}
 function renderProgress(){
  const previous=$('progressSelect').value,names=[...new Set(allExercises().map(x=>x.name))];
  $('progressSelect').innerHTML=names.map(n=>'<option>'+escapeHtml(n)+'</option>').join('');
  if(names.includes(previous))$('progressSelect').value=previous;
- const name=$('progressSelect').value,all=validWorkingSets(),logs=all.filter(x=>x.exercise===name);
- const bestLoad=logs.reduce((m,x)=>Math.max(m,x.weight),0),bestReps=logs.reduce((m,x)=>Math.max(m,x.reps),0);
+ const name=$('progressSelect').value,all=validWorkingSets(),completed=completedWorkingSets(),logs=all.filter(x=>x.exercise===name),exerciseSets=completed.filter(x=>x.exercise===name);
+ const bestLoad=logs.reduce((m,x)=>Math.max(m,x.weight),0),bestReps=exerciseSets.reduce((m,x)=>Math.max(m,x.reps),0);
  const estimates=logs.filter(x=>x.e1rm!==null),bestE1rm=estimates.reduce((m,x)=>Math.max(m,x.e1rm),0);
  $('prValue').textContent=bestLoad?bestLoad+' '+unit():'—';$('prName').textContent=name||'Select an exercise';
  $('progressSets').textContent=all.length;$('progressSessions').textContent=state.history.length;
  $('estimatedOneRm').textContent=bestE1rm?bestE1rm.toFixed(1)+' '+unit():'—';
  $('bestReps').textContent=bestReps||'—';
  const cutoff7=Date.now()-7*86400000,cutoff30=Date.now()-30*86400000;
- const week=all.filter(x=>x.timestamp>=cutoff7),month=all.filter(x=>x.timestamp>=cutoff30);
+ const week=all.filter(x=>x.timestamp>=cutoff7),month=all.filter(x=>x.timestamp>=cutoff30),weekSets=completed.filter(x=>x.timestamp>=cutoff7);
  $('weeklyVolume').textContent=Math.round(week.reduce((n,x)=>n+x.volume,0)).toLocaleString()+' '+unit();
  $('monthlyVolume').textContent=Math.round(month.reduce((n,x)=>n+x.volume,0)).toLocaleString()+' '+unit();
- $('weeklyWorkingSets').textContent=week.length;
- const points=logs.slice(-12),width=320,height=132,pad=14,values=points.map(x=>x.e1rm||x.weight),maxVal=Math.max(1,...values),minVal=Math.min(0,...values),range=Math.max(1,maxVal-minVal);
+ $('weeklyWorkingSets').textContent=weekSets.length;
+ const useEstimates=estimates.length>=2,points=(useEstimates?logs.filter(x=>x.e1rm!==null):logs).slice(-12),width=320,height=132,pad=14,values=points.map(x=>useEstimates?x.e1rm:x.weight),maxVal=Math.max(1,...values),minVal=Math.min(0,...values),range=Math.max(1,maxVal-minVal);
  const coords=values.map((v,i)=>((pad+i*(width-2*pad)/Math.max(1,values.length-1))+','+(height-pad-(v-minVal)/range*(height-2*pad))));
- $('chart').innerHTML=points.length>1?'<svg viewBox="0 0 320 132" role="img" aria-label="Estimated one rep max trend"><polyline points="'+coords.join(' ')+'" fill="none" stroke="var(--accent)" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>'+coords.map(p=>{const a=p.split(',');return '<circle cx="'+a[0]+'" cy="'+a[1]+'" r="3.5" fill="var(--accent)"/>'}).join('')+'</svg><div class="chart-axis-note">'+(estimates.length?'Estimated 1RM (Epley) · last 12 working sets':'Logged load · last 12 working sets')+'</div>':'<div class="chart-empty">Log at least two completed working sets to see your trend.</div>';
+ $('chart').innerHTML=points.length>1?'<svg viewBox="0 0 320 132" role="img" aria-label="Estimated one rep max trend"><polyline points="'+coords.join(' ')+'" fill="none" stroke="var(--accent)" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>'+coords.map(p=>{const a=p.split(',');return '<circle cx="'+a[0]+'" cy="'+a[1]+'" r="3.5" fill="var(--accent)"/>'}).join('')+'</svg><div class="chart-axis-note">'+(useEstimates?'Estimated 1RM (Epley) · last 12 working sets':'Logged load · last 12 working sets')+'</div>':'<div class="chart-empty">Log at least two completed working sets to see your trend.</div>';
  const records={};all.forEach(x=>{const r=records[x.exercise]||(records[x.exercise]={load:0,reps:0,e1rm:0,muscle:x.muscle});r.load=Math.max(r.load,x.weight);r.reps=Math.max(r.reps,x.reps);if(x.e1rm)r.e1rm=Math.max(r.e1rm,x.e1rm)});
  $('prList').innerHTML=Object.keys(records).sort((a,b)=>records[b].load-records[a].load).slice(0,10).map(n=>'<div class="pr-row"><span>'+escapeHtml(n)+'<small class="record-sub">Best reps: '+records[n].reps+' · Est. 1RM: '+(records[n].e1rm?records[n].e1rm.toFixed(1)+' '+unit():'—')+'</small></span><b>'+records[n].load+' '+unit()+'</b></div>').join('')||'<div class="empty-inline">Your records will appear here after you complete working sets with a load and reps.</div>';
- const volume={};week.forEach(x=>{volume[x.muscle]=(volume[x.muscle]||0)+1});const vmax=Math.max(1,...Object.values(volume));
+ const volume={};weekSets.forEach(x=>{volume[x.muscle]=(volume[x.muscle]||0)+1});const vmax=Math.max(1,...Object.values(volume));
  $('muscleVolume').innerHTML=Object.keys(volume).length?Object.entries(volume).sort((a,b)=>b[1]-a[1]).map(([m,n])=>'<div class="muscle-row"><b>'+escapeHtml(m)+'</b><div class="muscle-track"><span style="width:'+(n/vmax*100)+'%"></span></div><strong>'+n+'</strong></div>').join(''):'<div class="chart-empty">Complete working sets to see your weekly muscle-group volume.</div>';
  const measurements=(state.measurements||[]).slice().sort((a,b)=>b.timestamp-a.timestamp);
  $('measurementList').innerHTML=measurements.length?measurements.slice(0,8).map(x=>'<div class="measurement-row"><b>'+escapeHtml(x.date)+'</b><span>'+['bodyWeight','waist','chest','arm'].filter(k=>x[k]).map(k=>({bodyWeight:'Weight',waist:'Waist',chest:'Chest',arm:'Arm'}[k])+': '+escapeHtml(x[k])+' '+(k==='bodyWeight'?'kg':'cm')).join(' · ')+'</span></div>').join(''):'<div class="empty-inline">No body check-ins yet. Add one whenever you want to track a measurement.</div>';
