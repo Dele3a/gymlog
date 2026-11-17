@@ -1,0 +1,87 @@
+{
+  "version": "6.0",
+  "title": "GYMLOG exercise-selection evidence framework",
+  "purpose": "Explain exercise selection and avoid presenting an unsupported universal ranking of individual movements.",
+  "scoring": {
+    "name": "Practical Selection Fit",
+    "scale": "0-100",
+    "interpretation": "Heuristic completeness score for the available exercise record, not a measured physiological effect or a scientific ranking of muscle growth.",
+    "components": [
+      {
+        "name": "Target-muscle metadata",
+        "weight": 30,
+        "rule": "Reward records with explicit primary-muscle information."
+      },
+      {
+        "name": "Progressive-loading practicality",
+        "weight": 25,
+        "rule": "Reward equipment and movement patterns that allow load or difficulty to be tracked and progressed."
+      },
+      {
+        "name": "Movement coaching data",
+        "weight": 25,
+        "rule": "Reward sourced instructions and technique cues."
+      },
+      {
+        "name": "Exercise record completeness",
+        "weight": 20,
+        "rule": "Reward clear equipment and mechanic metadata."
+      }
+    ],
+    "limits": [
+      "A higher score does not mean an exercise produces more hypertrophy than another exercise.",
+      "No direct head-to-head trial evidence is claimed for each of the 500 catalogue variations.",
+      "The score is based on data completeness and practical selection factors; it is not a clinical effectiveness score.",
+      "Community feedback is displayed separately and never treated as scientific evidence."
+    ]
+  },
+  "researchPrinciples": [
+    {
+      "topic": "Resistance training overall",
+      "summary": "Resistance training improves strength and muscle size. The 2026 ACSM overview synthesized 137 systematic reviews and more than 30,000 participants. It found higher weekly volume supports hypertrophy; equipment type and exercise complexity did not consistently determine outcomes.",
+      "source": "https://pmc.ncbi.nlm.nih.gov/articles/PMC12965823/"
+    },
+    {
+      "topic": "Exercise variation",
+      "summary": "Systematic exercise variation may support regional adaptations, while random or excessive exercise changes can be counterproductive. Select variations for a reason rather than rotating movements constantly.",
+      "source": "https://pubmed.ncbi.nlm.nih.gov/35438660/"
+    },
+    {
+      "topic": "Range of motion and muscle length",
+      "summary": "A 2023 systematic review found that full range and lengthened partial ranges can be useful, with effects varying by muscle and exercise. Avoid universal claims that one ROM is always best.",
+      "source": "https://pubmed.ncbi.nlm.nih.gov/36662126/"
+    },
+    {
+      "topic": "Technique",
+      "summary": "A 2024 narrative review discusses longer muscle lengths and controlled technique, while acknowledging that evidence for many exercise-specific kinematic cues remains limited.",
+      "source": "https://pubmed.ncbi.nlm.nih.gov/38249086/"
+    }
+  ],
+  "communityFeedback": {
+    "status": "Qualitative only",
+    "summary": "Online discussions show mixed preferences for machines, cables and free weights. Lifters commonly cite comfort, stability, equipment availability, enjoyment and progression. Forum votes and anecdotes are not controlled effectiveness evidence.",
+    "sources": [
+      {
+        "url": "https://www.reddit.com/r/workout/comments/1mly4qk/is_there_a_difference_between_machines_and_free/",
+        "note": "Discussion includes mixed views and support for combining equipment types."
+      },
+      {
+        "url": "https://www.reddit.com/r/workout/comments/1t5isn1/machines_vs_free_weights/",
+        "note": "Anecdotal reports emphasize comfort, stability and target-muscle focus."
+      },
+      {
+        "url": "https://www.reddit.com/r/naturalbodybuilding/comments/1oix50a/how_much_does_exercise_selection_actually_matter/",
+        "note": "Discussion emphasizes individual fit, comfort and the ability to progress."
+      }
+    ],
+    "aggregation": "No verified internet-wide rating API or standardized exercise review dataset is used. GYMLOG user ratings are stored locally on the device and are not shared."
+  },
+  "visualData": {
+    "provider": "RepDB",
+    "url": "https://github.com/RepDB/exercise-dataset",
+    "runtimeEndpoint": "https://exercise-dataset.com/exercises.json",
+    "license": "Free commercial in-app use with visible attribution. GYMLOG loads images and exercise anatomy metadata from the provider at runtime; it does not mirror or redistribute their dataset.",
+    "attribution": "Exercise data by RepDB (repdb.co)",
+    "note": "The free tier provides flat 512px illustrations, usually start and peak poses. It is not a photorealistic or 3D-rendered library. Premium transparent animations and muscle heatmaps are not included in the free tier."
+  }
+}
