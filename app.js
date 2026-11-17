@@ -47,14 +47,15 @@ function repdbImage(asset,pose){
 }
 function muscleDisplay(s){return String(s||'').replace(/[_-]/g,' ').replace(/\b\w/g,c=>c.toUpperCase())}
 function exerciseEvidence(x){
- const asset=repdbMatch(x),primary=asset?.primary_muscles?.length||x.primary?.length||0;
- const equipment=String(x.equipment||'').toLowerCase(),mechanic=asset?.mechanic||(/press|row|squat|deadlift|pull.?up|pulldown/i.test(x.name)?'compound':'isolation');
- const target=primary?30:12;
- const loading=/barbell|dumbbell|cable|machine|smith|plate/.test(equipment)?25:/bodyweight/.test(equipment)?20:10;
- const coaching=asset?.instructions_en?.length?(asset?.tips_en?.length?25:20):(x.instructions?.length?15:5);
- const complete=(x.equipment?8:0)+(asset?.difficulty||x.difficulty?6:0)+(mechanic?6:0);
- const fit=Math.max(0,Math.min(100,target+loading+coaching+complete));
- return {fit,label:fit>=85?'Complete exercise reference':fit>=70?'Useful exercise reference':'Limited exercise data',confidence:'High for resistance training · limited for this exact variation',explanation:'This score measures the completeness and practical usefulness of the exercise record: target-muscle data, trackable loading, coaching instructions and movement metadata. It does not claim that this exercise produces more muscle growth than another.'};
+ const asset=repdbMatch(x),primaryCount=asset?.primary_muscles?.length||x.primary?.length||0;
+ const equipment=String(x.equipment||'').toLowerCase(),tags=(asset?.tags||[]).map(t=>String(t).toLowerCase());
+ const target=primaryCount===1?30:primaryCount===2?25:primaryCount>2?18:10;
+ const loading=/barbell|dumbbell|cable|machine|smith|plate/.test(equipment)?25:/bodyweight/.test(equipment)?18:10;
+ const stability=/machine|cable/.test(equipment)?15:/bench|supported/.test(equipment)?13:10;
+ const range=tags.some(t=>/long.length|lengthened|full.rom|large.rom/.test(t))?15:8;
+ const coaching=asset?.instructions_en?.length?(asset?.tips_en?.length?15:11):(x.instructions?.length?8:3);
+ const fit=Math.max(0,Math.min(100,target+loading+stability+range+coaching));
+ return {fit,label:fit>=85?'High selection fit':fit>=72?'Good selection fit':'Context-dependent option',confidence:'Strong evidence for resistance training overall · limited for this exact variation',explanation:'This evidence-informed heuristic considers target-muscle specificity, progressive-loading practicality, setup stability, available range-of-motion tags and coaching detail. It is a decision aid, not a measured hypertrophy effect or proof that one exercise is universally superior.'};
 }
 function communitySummary(name){const ratings=state.exerciseRatings||{},v=ratings[name];return v?{count:1,average:Number(v)}:{count:0,average:0}}
 async function loadExerciseVisualData(){
