@@ -5,33 +5,38 @@
   "scoring": {
     "name": "Practical Selection Fit",
     "scale": "0-100",
-    "interpretation": "Heuristic completeness score for the available exercise record, not a measured physiological effect or a scientific ranking of muscle growth.",
+    "interpretation": "Heuristic 0–100 selection-fit aid informed by training principles and available exercise metadata. It is not a measured physiological effect, clinical rating, or head-to-head scientific ranking.",
     "components": [
       {
-        "name": "Target-muscle metadata",
+        "name": "Target-muscle specificity",
         "weight": 30,
-        "rule": "Reward records with explicit primary-muscle information."
+        "rule": "Reward clear primary-muscle metadata; multi-target movements receive a slightly lower specificity component."
       },
       {
         "name": "Progressive-loading practicality",
         "weight": 25,
-        "rule": "Reward equipment and movement patterns that allow load or difficulty to be tracked and progressed."
+        "rule": "Reward trackable external loading; bodyweight variations remain scoreable but may offer fewer small load increments."
       },
       {
-        "name": "Movement coaching data",
-        "weight": 25,
-        "rule": "Reward sourced instructions and technique cues."
+        "name": "Setup stability and usability",
+        "weight": 15,
+        "rule": "Reward practical setups that reduce unnecessary stabilization demands; this is a usability factor, not a claim that machines cause more hypertrophy."
       },
       {
-        "name": "Exercise record completeness",
-        "weight": 20,
-        "rule": "Reward clear equipment and mechanic metadata."
+        "name": "Range-of-motion evidence tags",
+        "weight": 15,
+        "rule": "Reward explicit source tags for long-muscle-length or full-ROM characteristics when present. Missing tags are treated as unknown, not proof of poor ROM."
+      },
+      {
+        "name": "Coaching information",
+        "weight": 15,
+        "rule": "Reward exercise-specific instructions and tips."
       }
     ],
     "limits": [
-      "A higher score does not mean an exercise produces more hypertrophy than another exercise.",
+      "A higher score does not prove an exercise produces more hypertrophy than another exercise.",
       "No direct head-to-head trial evidence is claimed for each of the 500 catalogue variations.",
-      "The score is based on data completeness and practical selection factors; it is not a clinical effectiveness score.",
+      "Missing range-of-motion metadata is treated as unknown, not a negative finding.",
       "Community feedback is displayed separately and never treated as scientific evidence."
     ]
   },
