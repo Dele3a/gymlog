@@ -127,6 +127,69 @@ body{background:radial-gradient(ellipse at 50% -25%,#1d2b1b 0,transparent 48%),v
 }
 @media(min-width:761px){.bottom-nav{display:none}.app{padding-bottom:54px}}
 
+
+/* V5.2 workout engine */
+.set-head,.set-row{grid-template-columns:28px minmax(58px,1fr) minmax(48px,.8fr) 48px 48px 82px 30px;gap:6px}
+.set-row select,.set-row input[type=number]{width:100%;min-width:0;background:var(--surface2);border:1px solid var(--line);border-radius:9px;padding:9px 3px;color:var(--text);text-align:center;font-size:11px}
+.set-row select{font-size:9px;padding:9px 1px}
+.set-row.is-complete{background:#c8ff5508}
+.superset-strip{display:flex;justify-content:space-between;gap:8px;margin:9px 0 0;padding:8px 10px;border-radius:10px;background:#c8ff550d;border:1px solid #c8ff5520;font-size:10px;color:var(--accent)}
+.session-controls{display:flex;gap:7px;align-items:center;flex-wrap:wrap}
+.session-state{font-size:10px;color:var(--muted);margin-left:5px}
+.session-state.running{color:var(--good)}.session-state.paused{color:#ffbf69}
+@media(max-width:760px){.set-head,.set-row{grid-template-columns:22px minmax(48px,1fr) minmax(42px,.8fr) 38px 38px 70px 26px;gap:3px}.set-row select,.set-row input[type=number]{padding:8px 1px;font-size:10px}.workout-footer{align-items:flex-start;flex-direction:column}.workout-footer .session-controls{width:100%;justify-content:space-between}}
+
+
+/* V5.3 exercise library */
+.library-toolbar{display:flex;gap:9px;flex-wrap:wrap;align-items:center;margin:0 0 16px}
+.library-toolbar .btn{white-space:nowrap}
+.library-list{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;margin-top:18px}
+.library-item{display:flex;align-items:center;gap:12px;padding:14px;border:1px solid var(--line);border-radius:16px;background:var(--surface);min-width:0}
+.library-item .lib-info{min-width:0;flex:1}
+.library-item .lib-info b{display:block;font-size:13px}
+.library-item .lib-info span{display:block;font-size:10px;color:var(--muted);margin-top:4px}
+.library-item .lib-actions{display:flex;gap:5px;align-items:center}
+.library-item .lib-actions button{border:1px solid var(--line);border-radius:9px;background:var(--surface2);color:var(--text);padding:7px 9px;font-size:11px}
+.library-item .lib-actions .fav{color:var(--accent)}
+.library-item .lib-icon{display:grid;place-items:center;flex:0 0 42px;height:42px;border-radius:12px;background:#c8ff5514;color:var(--accent);font-size:10px;font-weight:850}
+.library-filters{display:flex;gap:7px;flex-wrap:wrap;margin:10px 0}
+.library-filters select{background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:9px;color:var(--text);font-size:11px}
+.exercise-modal{position:fixed;inset:0;z-index:120;background:#05090edb;display:flex;align-items:center;justify-content:center;padding:16px}
+.exercise-modal.hidden{display:none}
+.exercise-dialog{width:min(920px,100%);max-height:min(90vh,900px);overflow:auto;background:var(--surface);border:1px solid var(--line);border-radius:22px;padding:22px;box-shadow:0 24px 90px #0009}
+.exercise-dialog-head{display:flex;justify-content:space-between;gap:12px;align-items:flex-start}
+.exercise-dialog-head h2{font-size:24px;letter-spacing:-.7px;margin:4px 0}
+.exercise-dialog-grid{display:grid;grid-template-columns:minmax(0,1.2fr) minmax(220px,.8fr);gap:18px;margin-top:18px}
+.exercise-visual{background:var(--surface2);border:1px solid var(--line);border-radius:16px;padding:12px;min-height:240px}
+.exercise-visual svg{width:100%;height:220px;display:block}
+.muscle-map{display:flex;gap:8px;justify-content:center;align-items:center}
+.muscle-map svg{width:46%;height:190px}
+.muscle-map .body-base{fill:#65717b;opacity:.35;stroke:#8c9aa6;stroke-width:2}
+.muscle-map .muscle-highlight{fill:#c8ff55;opacity:.95;stroke:#e0ff9b;stroke-width:1}
+.muscle-map .muscle-muted{fill:#7d8992;opacity:.28;stroke:#9ca7b0;stroke-width:1}
+.exercise-facts{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;margin:14px 0}
+.exercise-fact{background:var(--surface2);border-radius:11px;padding:10px}
+.exercise-fact small{display:block;color:var(--muted);font-size:9px;text-transform:uppercase;letter-spacing:1px}
+.exercise-fact b{display:block;font-size:12px;margin-top:4px}
+.exercise-section{margin:16px 0}
+.exercise-section h3{font-size:13px;margin:0 0 7px}
+.exercise-section p,.exercise-section li{font-size:12px;line-height:1.55;color:var(--muted)}
+.exercise-section ul{padding-left:18px;margin:0}
+.exercise-dialog-actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:16px}
+@media(max-width:760px){.library-list{grid-template-columns:1fr}.exercise-dialog{padding:16px}.exercise-dialog-grid{grid-template-columns:1fr}.exercise-visual{min-height:210px}.exercise-visual svg{height:190px}}
+
+/* V5.4 strength analytics */
+.analytics-grid{grid-template-columns:repeat(auto-fit,minmax(145px,1fr))}
+.analytics-method{margin:0 0 14px;line-height:1.5}
+.analytics-card small{display:block;color:var(--muted);font-size:9px;margin-top:5px}
+.chart-axis-note{font-size:10px;color:var(--muted);text-align:center;margin-top:5px}
+.record-sub{display:block;color:var(--muted);font-size:9px;margin-top:4px;font-weight:500}
+@media(max-width:760px){.analytics-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.analytics-card{min-width:0}.analytics-card strong{font-size:18px}}
+/* V5.5 progression intelligence */
+.progression-note{border-left:3px solid var(--accent)}
+.progression-note>b{display:block;font-size:12px;margin:4px 0;color:var(--text)}
+.progression-note p{line-height:1.5}
+.progression-reduce{border-left-color:var(--danger)}.progression-plateau{border-left-color:#e5b45f}.progression-verify,.progression-hold{border-left-color:#8da9c6}
 </style>
 </head>
 <body>
@@ -143,7 +206,7 @@ body{background:radial-gradient(ellipse at 50% -25%,#1d2b1b 0,transparent 48%),v
  <div class="page-head"><div><div class="eyebrow">YOUR TRAINING SPACE</div><h1>Stay consistent.<br>Get stronger.</h1><p id="helloStats">Your training overview.</p></div><button class="btn primary" id="startWorkout">＋ Start session</button></div>
  <div class="grid stats-grid">
   <div class="stat-card"><div class="stat-top"><span>WORKOUTS</span><span class="stat-icon">↗</span></div><div class="stat-value" id="homeWorkouts">0</div><div class="stat-foot">Total sessions completed</div></div>
-  <div class="stat-card"><div class="stat-top"><span>TRAINING VOLUME</span><span class="stat-icon">▥</span></div><div class="stat-value" id="homeVolume">0</div><div class="stat-foot">Lifetime kg × reps</div></div>
+  <div class="stat-card"><div class="stat-top"><span>TRAINING VOLUME</span><span class="stat-icon">▥</span></div><div class="stat-value" id="homeVolume">0</div><div class="stat-foot">Lifetime load × reps</div></div>
   <div class="stat-card"><div class="stat-top"><span>EXERCISES</span><span class="stat-icon">◇</span></div><div class="stat-value" id="homeExercises">0</div><div class="stat-foot">In your current plan</div></div>
   <div class="stat-card"><div class="stat-top"><span>LAST 7 DAYS</span><span class="stat-icon">◷</span></div><div class="stat-value" id="homeWeek">0</div><div class="stat-foot">Sessions this week</div></div>
  </div>
@@ -153,22 +216,22 @@ body{background:radial-gradient(ellipse at 50% -25%,#1d2b1b 0,transparent 48%),v
  </div>
 </section>
 <section id="workoutPage" class="page hidden">
- <div class="page-head"><div><div class="eyebrow">SESSION BUILDER</div><h1>Your workout.</h1><p>Track every set. Build every rep.</p></div><button class="btn" id="addDay">＋ Add day</button></div>
+ <div class="page-head"><div><div class="eyebrow">SESSION BUILDER</div><h1>Your workout.</h1><p>Track every set. Build every rep. Progress with evidence, not guesswork.</p></div><button class="btn" id="addDay">＋ Add day</button></div>
  <div class="day-tabs" id="dayTabs"></div>
  <div class="workout-head"><div><h2 id="workoutTitle">PUSH + TRICEPS</h2><p id="workoutMeta">Exercises and working sets</p></div><div class="workout-actions"><button class="btn" id="renameDay">Rename day</button><button class="btn danger" id="deleteDay">Delete day</button><button class="btn primary" id="addExercise">＋ Exercise</button></div></div>
  <div id="workoutContent"></div>
- <div class="workout-footer"><span><span id="dayDone">0 sets done</span> · <b id="sessionClock" style="color:var(--accent)">0:00</b></span><button class="btn primary" id="finishWorkout">Finish session ✓</button></div>
+ <div class="workout-footer"><span><span id="dayDone">0 sets done</span> · <b id="sessionClock" style="color:var(--accent)">0:00</b><span id="sessionStatus" class="session-state">No active session</span></span><div class="session-controls"><button class="btn" id="pauseWorkout">Ⅱ Pause</button><button class="btn" id="resumeWorkout">▶ Resume</button><button class="btn danger" id="discardWorkout">Discard</button><button class="btn primary" id="finishWorkout">Finish session ✓</button></div></div>
 </section>
 <section id="libraryPage" class="page hidden">
  <div class="page-head"><div><div class="eyebrow">MOVEMENT DATABASE</div><h1>Exercise library.</h1><p>Browse the movements in your training plan.</p></div><span class="tiny muted" id="libraryCount"></span></div>
- <div class="library-controls"><input id="librarySearch" class="searchbox" placeholder="Search exercises or muscle groups..."><div class="filter-row" id="muscleFilters"></div></div><div class="library-list" id="libraryList"></div>
+ <div class="library-controls"><div class="library-toolbar"><input id="librarySearch" class="searchbox" placeholder="Search exercises, muscles or equipment..."><button class="btn primary" id="createCustomExercise">＋ Custom exercise</button></div><div class="filter-row" id="muscleFilters"></div><div class="library-filters"><select id="equipmentFilter" aria-label="Filter by equipment"><option value="All">All equipment</option></select><select id="difficultyFilter" aria-label="Filter by difficulty"><option value="All">All levels</option><option>Beginner</option><option>Intermediate</option><option>Advanced</option></select><button class="filter-chip" id="favoritesOnly">☆ Favorites</button></div></div><div class="library-list" id="libraryList"></div>
 </section>
 <section id="progressPage" class="page hidden">
  <div class="page-head"><div><div class="eyebrow">PERFORMANCE INSIGHTS</div><h1>Progress.</h1><p>Small improvements compound over time.</p></div></div>
- <div class="grid analytics-grid"><div class="stat-card analytics-card"><span>BEST LOGGED LOAD</span><strong id="prValue">—</strong></div><div class="stat-card analytics-card"><span>SETS RECORDED</span><strong id="progressSets">0</strong></div><div class="stat-card analytics-card"><span>SESSIONS</span><strong id="progressSessions">0</strong></div></div>
+ <div class="grid analytics-grid"><div class="stat-card analytics-card"><span>BEST LOGGED LOAD</span><strong id="prValue">—</strong></div><div class="stat-card analytics-card"><span>EST. 1RM</span><strong id="estimatedOneRm">—</strong><small> Epley estimate</small></div><div class="stat-card analytics-card"><span>BEST REPS</span><strong id="bestReps">—</strong></div><div class="stat-card analytics-card"><span>WORKING SETS</span><strong id="progressSets">0</strong></div><div class="stat-card analytics-card"><span>SESSIONS</span><strong id="progressSessions">0</strong></div></div><p class="tiny muted analytics-method">Analytics use completed working sets. Loaded volume excludes bodyweight-only, timed and non-working sets; estimated 1RM uses the Epley formula for sets of 1–10 reps.</p><div class="grid analytics-grid"><div class="stat-card analytics-card"><span>7-DAY VOLUME</span><strong id="weeklyVolume">0</strong><small>Load × reps</small></div><div class="stat-card analytics-card"><span>30-DAY VOLUME</span><strong id="monthlyVolume">0</strong><small>Load × reps</small></div><div class="stat-card analytics-card"><span>7-DAY WORKING SETS</span><strong id="weeklyWorkingSets">0</strong><small>Completed sets only</small></div></div>
  <div class="card chart-card"><div class="card-head"><h2>Strength trend</h2><select id="progressSelect" class="btn"></select></div><div class="tiny muted" id="prName">Select an exercise</div><div class="chart-wrap" id="chart"><div class="chart-empty">Log a few sessions to see your trend.</div></div></div>
  <div class="card"><div class="card-head"><h2>Personal bests</h2><span class="eyebrow">TOP LOADS</span></div><div id="prList"></div></div>
- <div class="card chart-card"><div class="card-head"><h2>Muscle group volume</h2><span class="tiny muted">Last 7 days · completed sets</span></div><div id="muscleVolume"><div class="chart-empty">Complete logged sets to see volume by muscle.</div></div></div>
+ <div class="card chart-card"><div class="card-head"><h2>Muscle group volume</h2><span class="tiny muted">Last 7 days · completed working sets</span></div><div id="muscleVolume"><div class="chart-empty">Complete logged sets to see volume by muscle.</div></div></div>
  <div class="card chart-card"><div class="card-head"><h2>Body measurements</h2><button class="btn primary" id="addMeasurement">＋ Add check-in</button></div><p class="tiny muted">Optional progress measurements stay on this device.</p><div id="measurementList"><div class="empty-inline">No body check-ins yet.</div></div></div>
  <div class="card"><div class="card-head"><h2>Monthly training report</h2><button class="btn" id="monthlyReport">↓ Export CSV</button></div><p class="tiny muted">Export this month's sessions, completed sets, training volume and session duration.</p></div>
 
@@ -194,6 +257,6 @@ body{background:radial-gradient(ellipse at 50% -25%,#1d2b1b 0,transparent 48%),v
  <button class="active" data-tab="home"><span>⌂</span>Home</button><button data-tab="workout"><span>▣</span>Train</button><button data-tab="library"><span>⌕</span>Library</button><button data-tab="progress"><span>↗</span>Progress</button><button data-tab="settings"><span>◉</span>Profile</button>
 </nav>
 <div id="timerOverlay" class="timer-overlay hidden"><div class="timer-box"><div class="eyebrow">RECOVERY TIMER</div><h2>REST & RESET</h2><strong id="timerValue">1:30</strong><div class="timer-actions"><button class="btn" id="timerMinus">−15s</button><button class="btn" id="timerPlus">+15s</button><button class="btn primary" id="timerClose">Close</button></div></div></div>
-<div id="toast" class="toast"></div>
+<div id="exerciseModal" class="exercise-modal hidden" role="dialog" aria-modal="true" aria-labelledby="exerciseModalTitle"><div class="exercise-dialog"><div class="exercise-dialog-head"><div><div class="eyebrow">EXERCISE GUIDE</div><h2 id="exerciseModalTitle">Exercise</h2><p id="exerciseModalSubtitle" class="tiny muted"></p></div><button class="btn" id="closeExerciseModal">Close ✕</button></div><div id="exerciseModalBody"></div></div></div><div id="toast" class="toast"></div>
 <script src="app.js"></script>
 </body></html>
