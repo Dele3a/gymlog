@@ -126,8 +126,10 @@ function finishWorkout(){
 function startTimer(n){clearInterval(timer);remaining=n;$('timerOverlay').classList.remove('hidden');tick();timer=setInterval(()=>{remaining--;tick();if(remaining<=0){clearInterval(timer);$('timerValue').textContent='DONE';if(navigator.vibrate)navigator.vibrate([180,100,180])}},1000)}
 function tick(){ $('timerValue').textContent=formatTime(Math.max(0,remaining)) }
 function libraryItems(){
- const map=new Map();allExercises().forEach(x=>{const k=x.name.toLowerCase();if(!map.has(k))map.set(k,Object.assign({},x,{source:'routine'}))});
- (state.customExercises||[]).forEach(x=>{const k=x.name.toLowerCase();if(!map.has(k))map.set(k,Object.assign({sets:3,min:8,max:12,unit:'reps',rest:90},x,{source:'custom'}))});
+ const map=new Map();
+ (window.GYMLOG_EXERCISES||[]).forEach(x=>{const k=x.name.toLowerCase();if(!map.has(k))map.set(k,Object.assign({},x,{source:'catalog'}))});
+ allExercises().forEach(x=>{const k=x.name.toLowerCase();map.set(k,Object.assign({},map.get(k)||{},x,{source:'routine'}))});
+ (state.customExercises||[]).forEach(x=>{const k=x.name.toLowerCase();map.set(k,Object.assign({sets:3,min:8,max:12,unit:'reps',rest:90},map.get(k)||{},x,{source:'custom'}))});
  return Array.from(map.values()).map(x=>Object.assign(x,exerciseMeta(x)));
 }
 function exerciseMeta(x){
@@ -209,11 +211,31 @@ function completedWorkingSets(since=0){
  return out;
 }
 function validWorkingSets(since=0){return completedWorkingSets(since).filter(x=>x.loaded)}
+function renderOverallProgress(completed,loaded){
+ const now=Date.now(),dayMs=86400000,from30=now-30*dayMs,from60=now-60*dayMs;
+ const sessions=state.history.map(h=>({h,t:Number(h.timestamp)||new Date(h.date).getTime()})).filter(x=>Number.isFinite(x.t)).sort((a,b)=>a.t-b.t);
+ const recent=sessions.filter(x=>x.t>=from30),prior=sessions.filter(x=>x.t>=from60&&x.t<from30),recentSets=completed.filter(x=>x.timestamp>=from30),recentLoaded=loaded.filter(x=>x.timestamp>=from30);
+ const recentVolume=recentLoaded.reduce((n,x)=>n+x.volume,0),priorVolume=loaded.filter(x=>x.timestamp>=from60&&x.timestamp<from30).reduce((n,x)=>n+x.volume,0);
+ const days=new Set(recent.map(x=>new Date(x.t).toDateString())).size,delta=(a,b)=>b?Math.round((a-b)/b*100):null;
+ $('overallSessions').textContent=recent.length;$('overallSets').textContent=recentSets.length;$('overallVolume').textContent=Math.round(recentVolume).toLocaleString()+' '+unit();$('overallDays').textContent=days+' / 30';
+ const sd=delta(recent.length,prior.length),vd=delta(recentVolume,priorVolume);
+ $('overallSessionsNote').textContent=sd===null?'No previous 30-day baseline':(sd>=0?'+':'')+sd+'% vs previous 30 days';
+ $('overallVolumeNote').textContent=vd===null?'No previous 30-day baseline':(vd>=0?'+':'')+vd+'% vs previous 30 days';
+ const active=new Set(sessions.map(x=>new Date(x.t).toDateString()));let streak=0,cursor=new Date();cursor.setHours(0,0,0,0);if(!active.has(cursor.toDateString()))cursor.setDate(cursor.getDate()-1);while(active.has(cursor.toDateString())&&streak<365){streak++;cursor.setDate(cursor.getDate()-1)}$('overallStreak').textContent=streak+' day'+(streak===1?'':'s');
+ const weeks=[];for(let i=7;i>=0;i--){const start=new Date();start.setHours(0,0,0,0);start.setDate(start.getDate()-start.getDay()-i*7);const end=start.getTime()+7*dayMs;const sets=completed.filter(x=>x.timestamp>=start.getTime()&&x.timestamp<end),vol=loaded.filter(x=>x.timestamp>=start.getTime()&&x.timestamp<end).reduce((n,x)=>n+x.volume,0),count=sessions.filter(x=>x.t>=start.getTime()&&x.t<end).length;weeks.push({label:start.toLocaleDateString(undefined,{month:'short',day:'numeric'}),sets:sets.length,volume:vol,sessions:count})}
+ const peak=Math.max(1,...weeks.map(x=>x.volume));
+ $('overallTrend').innerHTML='<div class="overall-bars">'+weeks.map(x=>'<div class="overall-week"><div class="overall-bar-value">'+(x.volume?Math.round(x.volume/100)/10+'k':'—')+'</div><div class="overall-bar-track"><span style="height:'+Math.max(x.volume?4:0,x.volume/peak*100)+'%"></span></div><b>'+x.label+'</b><small>'+x.sessions+' sess.</small></div>').join('')+'</div><div class="chart-legend"><span><i></i> Weekly loaded volume ('+unit()+')</span><span>Session count shown below each week</span></div>';
+ const balance={};recentSets.forEach(x=>balance[x.muscle]=(balance[x.muscle]||0)+1);const maxBalance=Math.max(1,...Object.values(balance));
+ $('overallBalance').innerHTML=Object.keys(balance).length?Object.entries(balance).sort((a,b)=>b[1]-a[1]).map(([m,n])=>'<div class="balance-row"><span>'+escapeHtml(m)+'</span><div><i style="width:'+(n/maxBalance*100)+'%"></i></div><b>'+n+'</b></div>').join(''):'<div class="chart-empty">Log completed working sets to build your muscle-group overview.</div>';
+ const totalVol=loaded.reduce((n,x)=>n+x.volume,0),totalSets=completed.length,avg=recent.length?Math.round(recent.reduce((n,x)=>n+(Number(x.h.duration)||0),0)/recent.length/60):0;
+ $('overallSummary').textContent=state.history.length?state.history.length+' total sessions · '+totalSets.toLocaleString()+' completed working sets · '+Math.round(totalVol).toLocaleString()+' '+unit()+' total loaded volume · '+avg+' min average session over the last 30 days.':'Your overall training summary will appear after your first completed workout.';
+}
 function renderProgress(){
  const previous=$('progressSelect').value,names=[...new Set(allExercises().map(x=>x.name))];
  $('progressSelect').innerHTML=names.map(n=>'<option>'+escapeHtml(n)+'</option>').join('');
  if(names.includes(previous))$('progressSelect').value=previous;
  const name=$('progressSelect').value,all=validWorkingSets(),completed=completedWorkingSets(),logs=all.filter(x=>x.exercise===name),exerciseSets=completed.filter(x=>x.exercise===name);
+ renderOverallProgress(completed,all);
  const bestLoad=logs.reduce((m,x)=>Math.max(m,x.weight),0),bestReps=exerciseSets.reduce((m,x)=>Math.max(m,x.reps),0);
  const estimates=logs.filter(x=>x.e1rm!==null),bestE1rm=estimates.reduce((m,x)=>Math.max(m,x.e1rm),0);
  $('prValue').textContent=bestLoad?bestLoad+' '+unit():'—';$('prName').textContent=name||'Select an exercise';
@@ -228,6 +250,8 @@ function renderProgress(){
  const useEstimates=estimates.length>=2,points=(useEstimates?logs.filter(x=>x.e1rm!==null):logs).slice(-12),width=320,height=132,pad=14,values=points.map(x=>useEstimates?x.e1rm:x.weight),maxVal=Math.max(1,...values),minVal=Math.min(0,...values),range=Math.max(1,maxVal-minVal);
  const coords=values.map((v,i)=>((pad+i*(width-2*pad)/Math.max(1,values.length-1))+','+(height-pad-(v-minVal)/range*(height-2*pad))));
  $('chart').innerHTML=points.length>1?'<svg viewBox="0 0 320 132" role="img" aria-label="Estimated one rep max trend"><polyline points="'+coords.join(' ')+'" fill="none" stroke="var(--accent)" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>'+coords.map(p=>{const a=p.split(',');return '<circle cx="'+a[0]+'" cy="'+a[1]+'" r="3.5" fill="var(--accent)"/>'}).join('')+'</svg><div class="chart-axis-note">'+(useEstimates?'Estimated 1RM (Epley) · last 12 working sets':'Logged load · last 12 working sets')+'</div>':'<div class="chart-empty">Log at least two completed working sets to see your trend.</div>';
+ const selectedHistory=completed.filter(x=>x.exercise===name).slice().sort((a,b)=>b.timestamp-a.timestamp).slice(0,12);
+ $('exerciseHistory').innerHTML=selectedHistory.length?selectedHistory.map(x=>'<div class="exercise-history-row"><span><b>'+escapeHtml(x.date.toLocaleDateString(undefined,{month:'short',day:'numeric',year:'numeric'}))+'</b><small>'+escapeHtml(x.muscle)+' · '+(x.loaded?escapeHtml(x.weight)+' '+unit():'Bodyweight')+'</small></span><strong>'+x.reps+' reps</strong><em>'+(x.e1rm?('e1RM '+x.e1rm.toFixed(1)+' '+unit()):'Working set')+'</em></div>').join(''):'<div class="empty-inline">No saved working-set history for this exercise yet.</div>';
  const records={};all.forEach(x=>{const r=records[x.exercise]||(records[x.exercise]={load:0,reps:0,e1rm:0,muscle:x.muscle});r.load=Math.max(r.load,x.weight);r.reps=Math.max(r.reps,x.reps);if(x.e1rm)r.e1rm=Math.max(r.e1rm,x.e1rm)});
  $('prList').innerHTML=Object.keys(records).sort((a,b)=>records[b].load-records[a].load).slice(0,10).map(n=>'<div class="pr-row"><span>'+escapeHtml(n)+'<small class="record-sub">Best reps: '+records[n].reps+' · Est. 1RM: '+(records[n].e1rm?records[n].e1rm.toFixed(1)+' '+unit():'—')+'</small></span><b>'+records[n].load+' '+unit()+'</b></div>').join('')||'<div class="empty-inline">Your records will appear here after you complete working sets with a load and reps.</div>';
  const volume={};weekSets.forEach(x=>{volume[x.muscle]=(volume[x.muscle]||0)+1});const vmax=Math.max(1,...Object.values(volume));
