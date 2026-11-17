@@ -28,7 +28,7 @@ let activeSession=state.activeSession||null;
 // V6 exercise reference data: illustrations are loaded from the licensed RepDB public dataset.
 let exerciseVisualData=null,exerciseVisualStatus='loading';
 const REPDB_JSON='https://exercise-dataset.com/exercises.json';
-function normalizeExerciseName(s){return String(s||'').toLowerCase().replace(/[^a-z0-9 ]/g,' ').replace(/\\b(barbell|dumbbell|cable|machine|smith machine|selectorized|plate loaded|single leg|paused|tempo|wide grip|close grip|neutral grip)\\b/g,' ').replace(/\\s+/g,' ').trim()}
+function normalizeExerciseName(s){return String(s||'').toLowerCase().replace(/[^a-z0-9 ]/g,' ').replace(/\b(barbell|dumbbell|cable|machine|smith machine|selectorized|plate loaded|single leg|paused|tempo|wide grip|close grip|neutral grip|flat|incline|decline|seated|standing|reverse|straight bar|ez bar|rope|alternating|one arm|single arm|chest supported|lying|prone|overhead|unilateral|bilateral|wide stance|narrow stance)\b/g,' ').replace(/\s+/g,' ').trim()}
 function repdbMatch(x){
  if(!exerciseVisualData||!exerciseVisualData.exercises)return null;
  const q=normalizeExerciseName(x.name),exact=exerciseVisualData.exercises.find(z=>normalizeExerciseName(z.name_en)===q);
@@ -45,7 +45,7 @@ function repdbImage(asset,pose){
  if(path.startsWith('http'))return path;
  return 'https://exercise-dataset.com/'+(path.charAt(0)==='/'?path.slice(1):path);
 }
-function muscleDisplay(s){return String(s||'').replace(/[_-]/g,' ').replace(/\\b\\w/g,c=>c.toUpperCase())}
+function muscleDisplay(s){return String(s||'').replace(/[_-]/g,' ').replace(/\b\w/g,c=>c.toUpperCase())}
 function exerciseEvidence(x){
  const asset=repdbMatch(x),primary=asset?.primary_muscles?.length||x.primary?.length||0;
  const equipment=String(x.equipment||'').toLowerCase(),mechanic=asset?.mechanic||(/press|row|squat|deadlift|pull.?up|pulldown/i.test(x.name)?'compound':'isolation');
@@ -57,7 +57,7 @@ function exerciseEvidence(x){
  return {fit,label:fit>=85?'Complete exercise reference':fit>=70?'Useful exercise reference':'Limited exercise data',confidence:'High for resistance training · limited for this exact variation',explanation:'This score measures the completeness and practical usefulness of the exercise record: target-muscle data, trackable loading, coaching instructions and movement metadata. It does not claim that this exercise produces more muscle growth than another.'};
 }
 function communitySummary(name){const ratings=state.exerciseRatings||{},v=ratings[name];return v?{count:1,average:Number(v)}:{count:0,average:0}}
-async async function loadExerciseVisualData(){
+async function loadExerciseVisualData(){
  try{const response=await fetch(REPDB_JSON,{mode:'cors'});if(!response.ok)throw Error('Dataset request failed');exerciseVisualData=await response.json();exerciseVisualStatus='ready';renderLibrary();}
  catch(e){exerciseVisualStatus='unavailable';renderLibrary();}
 }
