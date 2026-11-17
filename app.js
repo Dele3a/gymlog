@@ -38,7 +38,7 @@ function getSet(d,e,s){const k=key(d,e,s);if(!state.entries[k]){const x=days[d].
 function updateSet(d,e,s,p){state.entries[key(d,e,s)]=Object.assign({},getSet(d,e,s),p);save()}
 function latestFor(name){const out=[];state.history.slice().reverse().forEach(h=>(h.details||[]).filter(x=>x.exercise===name).forEach(x=>out.push(x)));return out}
 function estimateSuggestion(x){const logs=latestFor(x.name);if(!logs.length)return 'Log your first session to unlock progression tips.';const last=logs.slice(-x.sets),valid=last.filter(z=>Number(z.reps)>0);if(!valid.length)return 'Complete your sets to receive a recommendation.';if(valid.length>=x.sets&&valid.every(z=>Number(z.reps)>=x.max)){const w=Math.max.apply(null,valid.map(z=>Number(z.weight)||0));return 'Target: increase by '+(unit()==='kg'?'2–2.5 kg':'5 lb')+' next session, keeping reps in range.'}return 'Target: add 1 rep to one or more sets while maintaining good technique.'}
-function stats(){const workouts=state.history.length,vol=state.history.reduce((a,h)=>a+(h.details||[]).reduce((b,x)=>b+(Number(x.weight)||0)*(Number(x.reps)||0),0),0),prs={};state.history.forEach(h=>(h.details||[]).forEach(x=>{prs[x.exercise]=Math.max(prs[x.exercise]||0,Number(x.weight)||0)}));return {workouts,vol,prs,prCount:Object.keys(prs).length}}
+function stats(){const workouts=state.history.length,vol=validWorkingSets().reduce((n,x)=>n+x.volume,0),prs={};validWorkingSets().forEach(x=>{prs[x.exercise]=Math.max(prs[x.exercise]||0,x.weight)});return {workouts,vol,prs,prCount:Object.keys(prs).length}}
 function weekCount(){const now=new Date(),start=new Date(now);start.setDate(now.getDate()-6);return state.history.filter(h=>{const d=new Date(h.timestamp||h.date);return !isNaN(d)&&d>=start}).length}
 function showToast(msg){const t=$('toast');t.textContent=msg;t.classList.add('show');clearTimeout(showToast.t);showToast.t=setTimeout(()=>t.classList.remove('show'),2300)}
 function setTab(t){tab=t;document.querySelectorAll('[data-tab]').forEach(b=>b.classList.toggle('active',b.dataset.tab===t));['home','workout','library','progress','history','settings'].forEach(k=>$(k+'Page').classList.toggle('hidden',k!==t));render()}
@@ -173,13 +173,45 @@ function renderLibrary(){
  $('libraryList').querySelectorAll('[data-add]').forEach(b=>b.onclick=()=>addLibraryExercise(b.dataset.add));
 }
 
+function validWorkingSets(since=0){
+ const out=[];
+ state.history.forEach(h=>{
+  const stamp=Number(h.timestamp)||new Date(h.date).getTime();
+  if(!Number.isFinite(stamp)||stamp<since)return;
+  (h.details||[]).forEach(x=>{
+   const routine=allExercises().find(e=>e.name===x.exercise);
+   const reps=Number(x.reps),weight=Number(x.weight);
+   if(!x.done||(x.setType||'working')!=='working'||!Number.isFinite(reps)||reps<1||!Number.isFinite(weight)||weight<=0||routine&&routine.unit==='sec'||routine&&routine.equipment==='Bodyweight')return;
+   out.push({exercise:x.exercise,muscle:x.muscle||(routine&&routine.muscle)||'Other',weight,reps,volume:weight*reps,timestamp:stamp,date:new Date(stamp),e1rm:reps<=10?weight*(1+reps/30):null});
+  });
+ });
+ return out;
+}
 function renderProgress(){
- const s=stats(),previous=$('progressSelect').value,names=[...new Set(allExercises().map(x=>x.name))];$('progressSelect').innerHTML=names.map(n=>'<option>'+escapeHtml(n)+'</option>').join('');if(names.includes(previous))$('progressSelect').value=previous;const name=$('progressSelect').value,logs=latestFor(name),max=logs.reduce((m,x)=>Math.max(m,Number(x.weight)||0),0);$('prValue').textContent=max?max+' '+unit():'—';$('prName').textContent=name||'Personal record';$('progressSets').textContent=logs.length;$('progressSessions').textContent=s.workouts;
- const points=logs.slice(-12).map(x=>Number(x.weight)||0),width=320,height=116,pad=12,maxVal=Math.max(1,...points),minVal=Math.min(0,...points),range=Math.max(1,maxVal-minVal),coords=points.map((v,i)=>((pad+i*(width-2*pad)/Math.max(1,points.length-1))+','+(height-pad-(v-minVal)/range*(height-2*pad))));$('chart').innerHTML=points.length>1?'<svg viewBox="0 0 320 116" role="img" aria-label="Recent working weights"><polyline points="'+coords.join(' ')+'" fill="none" stroke="var(--accent)" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>'+coords.map(p=>{const a=p.split(',');return '<circle cx="'+a[0]+'" cy="'+a[1]+'" r="3.5" fill="var(--accent)"/>'}).join('')+'</svg>':'<div class="chart-empty">Log at least two sessions to see your trend.</div>';
- $('prList').innerHTML=Object.keys(s.prs).sort((a,b)=>s.prs[b]-s.prs[a]).slice(0,8).map(n=>'<div class="pr-row"><span>'+escapeHtml(n)+'</span><b>'+s.prs[n]+' '+unit()+'</b></div>').join('')||'<div class="empty-inline">Your records will appear here as you train.</div>';
- const cutoff=Date.now()-7*86400000,volume={};state.history.filter(h=>(Number(h.timestamp)||new Date(h.date).getTime())>=cutoff).forEach(h=>(h.details||[]).filter(x=>x.done).forEach(x=>{const m=x.muscle||"Other";volume[m]=(volume[m]||0)+1}));const vmax=Math.max(1,...Object.values(volume));$('muscleVolume').innerHTML=Object.keys(volume).length?Object.entries(volume).sort((a,b)=>b[1]-a[1]).map(([m,n])=>'<div class="muscle-row"><b>'+escapeHtml(m)+'</b><div class="muscle-track"><span style="width:'+(n/vmax*100)+'%"></span></div><strong>'+n+'</strong></div>').join(''):'<div class="chart-empty">Complete sets with the DONE box checked to see your weekly muscle volume.</div>';
- const measurements=(state.measurements||[]).slice().sort((a,b)=>b.timestamp-a.timestamp);$('measurementList').innerHTML=measurements.length?measurements.slice(0,8).map(x=>'<div class="measurement-row"><b>'+escapeHtml(x.date)+'</b><span>'+['bodyWeight','waist','chest','arm'].filter(k=>x[k]).map(k=>({bodyWeight:'Weight',waist:'Waist',chest:'Chest',arm:'Arm'}[k])+': '+escapeHtml(x[k])+' '+(k==='bodyWeight'?'kg':'cm')).join(' · ')+'</span></div>').join(''):'<div class="empty-inline">No body check-ins yet. Add one whenever you want to track a measurement.</div>';
-
+ const previous=$('progressSelect').value,names=[...new Set(allExercises().map(x=>x.name))];
+ $('progressSelect').innerHTML=names.map(n=>'<option>'+escapeHtml(n)+'</option>').join('');
+ if(names.includes(previous))$('progressSelect').value=previous;
+ const name=$('progressSelect').value,all=validWorkingSets(),logs=all.filter(x=>x.exercise===name);
+ const bestLoad=logs.reduce((m,x)=>Math.max(m,x.weight),0),bestReps=logs.reduce((m,x)=>Math.max(m,x.reps),0);
+ const estimates=logs.filter(x=>x.e1rm!==null),bestE1rm=estimates.reduce((m,x)=>Math.max(m,x.e1rm),0);
+ $('prValue').textContent=bestLoad?bestLoad+' '+unit():'—';$('prName').textContent=name||'Select an exercise';
+ $('progressSets').textContent=all.length;$('progressSessions').textContent=state.history.length;
+ $('estimatedOneRm').textContent=bestE1rm?bestE1rm.toFixed(1)+' '+unit():'—';
+ $('bestReps').textContent=bestReps||'—';
+ const cutoff7=Date.now()-7*86400000,cutoff30=Date.now()-30*86400000;
+ const week=all.filter(x=>x.timestamp>=cutoff7),month=all.filter(x=>x.timestamp>=cutoff30);
+ $('weeklyVolume').textContent=Math.round(week.reduce((n,x)=>n+x.volume,0)).toLocaleString()+' '+unit();
+ $('monthlyVolume').textContent=Math.round(month.reduce((n,x)=>n+x.volume,0)).toLocaleString()+' '+unit();
+ $('weeklyWorkingSets').textContent=week.length;
+ const points=logs.slice(-12),width=320,height=132,pad=14,values=points.map(x=>x.e1rm||x.weight),maxVal=Math.max(1,...values),minVal=Math.min(0,...values),range=Math.max(1,maxVal-minVal);
+ const coords=values.map((v,i)=>((pad+i*(width-2*pad)/Math.max(1,values.length-1))+','+(height-pad-(v-minVal)/range*(height-2*pad))));
+ $('chart').innerHTML=points.length>1?'<svg viewBox="0 0 320 132" role="img" aria-label="Estimated one rep max trend"><polyline points="'+coords.join(' ')+'" fill="none" stroke="var(--accent)" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>'+coords.map(p=>{const a=p.split(',');return '<circle cx="'+a[0]+'" cy="'+a[1]+'" r="3.5" fill="var(--accent)"/>'}).join('')+'</svg><div class="chart-axis-note">'+(estimates.length?'Estimated 1RM (Epley) · last 12 working sets':'Logged load · last 12 working sets')+'</div>':'<div class="chart-empty">Log at least two completed working sets to see your trend.</div>';
+ const records={};all.forEach(x=>{const r=records[x.exercise]||(records[x.exercise]={load:0,reps:0,e1rm:0,muscle:x.muscle});r.load=Math.max(r.load,x.weight);r.reps=Math.max(r.reps,x.reps);if(x.e1rm)r.e1rm=Math.max(r.e1rm,x.e1rm)});
+ $('prList').innerHTML=Object.keys(records).sort((a,b)=>records[b].load-records[a].load).slice(0,10).map(n=>'<div class="pr-row"><span>'+escapeHtml(n)+'<small class="record-sub">Best reps: '+records[n].reps+' · Est. 1RM: '+(records[n].e1rm?records[n].e1rm.toFixed(1)+' '+unit():'—')+'</small></span><b>'+records[n].load+' '+unit()+'</b></div>').join('')||'<div class="empty-inline">Your records will appear here after you complete working sets with a load and reps.</div>';
+ const volume={};week.forEach(x=>{volume[x.muscle]=(volume[x.muscle]||0)+1});const vmax=Math.max(1,...Object.values(volume));
+ $('muscleVolume').innerHTML=Object.keys(volume).length?Object.entries(volume).sort((a,b)=>b[1]-a[1]).map(([m,n])=>'<div class="muscle-row"><b>'+escapeHtml(m)+'</b><div class="muscle-track"><span style="width:'+(n/vmax*100)+'%"></span></div><strong>'+n+'</strong></div>').join(''):'<div class="chart-empty">Complete working sets to see your weekly muscle-group volume.</div>';
+ const measurements=(state.measurements||[]).slice().sort((a,b)=>b.timestamp-a.timestamp);
+ $('measurementList').innerHTML=measurements.length?measurements.slice(0,8).map(x=>'<div class="measurement-row"><b>'+escapeHtml(x.date)+'</b><span>'+['bodyWeight','waist','chest','arm'].filter(k=>x[k]).map(k=>({bodyWeight:'Weight',waist:'Waist',chest:'Chest',arm:'Arm'}[k])+': '+escapeHtml(x[k])+' '+(k==='bodyWeight'?'kg':'cm')).join(' · ')+'</span></div>').join(''):'<div class="empty-inline">No body check-ins yet. Add one whenever you want to track a measurement.</div>';
 }
 function renderHistory(){$('historyList').innerHTML=state.history.length?state.history.map(h=>'<details class="history-card"><summary><span><b>'+escapeHtml(h.name)+'</b><small>'+escapeHtml(h.date)+' · '+formatTime(h.duration||0)+'</small></span><strong>'+((h.details||[]).length)+' sets</strong></summary><div class="history-detail">'+(h.details||[]).map(x=>'<div>'+escapeHtml(x.exercise)+' <b>'+escapeHtml(x.weight||'—')+' '+unit()+' × '+escapeHtml(x.reps||'—')+'</b><span> '+(x.setType||'working')+(x.rir!=null?' · RIR '+x.rir:'')+(x.rpe!=null?' · RPE '+x.rpe:'')+'</span></div>').join('')+'</div></details>').join(''):'<div class="empty-state">No workouts logged yet. Your completed sessions will show here.</div>'}
 function renderSettings(){$('unitSetting').textContent=unit().toUpperCase();$('themeSetting').textContent=state.settings.theme==='light'?'Light':'Dark';}
