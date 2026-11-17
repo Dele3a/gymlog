@@ -139,6 +139,45 @@ body{background:radial-gradient(ellipse at 50% -25%,#1d2b1b 0,transparent 48%),v
 .session-state.running{color:var(--good)}.session-state.paused{color:#ffbf69}
 @media(max-width:760px){.set-head,.set-row{grid-template-columns:22px minmax(48px,1fr) minmax(42px,.8fr) 38px 38px 70px 26px;gap:3px}.set-row select,.set-row input[type=number]{padding:8px 1px;font-size:10px}.workout-footer{align-items:flex-start;flex-direction:column}.workout-footer .session-controls{width:100%;justify-content:space-between}}
 
+
+/* V5.3 exercise library */
+.library-toolbar{display:flex;gap:9px;flex-wrap:wrap;align-items:center;margin:0 0 16px}
+.library-toolbar .btn{white-space:nowrap}
+.library-list{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;margin-top:18px}
+.library-item{display:flex;align-items:center;gap:12px;padding:14px;border:1px solid var(--line);border-radius:16px;background:var(--surface);min-width:0}
+.library-item .lib-info{min-width:0;flex:1}
+.library-item .lib-info b{display:block;font-size:13px}
+.library-item .lib-info span{display:block;font-size:10px;color:var(--muted);margin-top:4px}
+.library-item .lib-actions{display:flex;gap:5px;align-items:center}
+.library-item .lib-actions button{border:1px solid var(--line);border-radius:9px;background:var(--surface2);color:var(--text);padding:7px 9px;font-size:11px}
+.library-item .lib-actions .fav{color:var(--accent)}
+.library-item .lib-icon{display:grid;place-items:center;flex:0 0 42px;height:42px;border-radius:12px;background:#c8ff5514;color:var(--accent);font-size:10px;font-weight:850}
+.library-filters{display:flex;gap:7px;flex-wrap:wrap;margin:10px 0}
+.library-filters select{background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:9px;color:var(--text);font-size:11px}
+.exercise-modal{position:fixed;inset:0;z-index:120;background:#05090edb;display:flex;align-items:center;justify-content:center;padding:16px}
+.exercise-modal.hidden{display:none}
+.exercise-dialog{width:min(920px,100%);max-height:min(90vh,900px);overflow:auto;background:var(--surface);border:1px solid var(--line);border-radius:22px;padding:22px;box-shadow:0 24px 90px #0009}
+.exercise-dialog-head{display:flex;justify-content:space-between;gap:12px;align-items:flex-start}
+.exercise-dialog-head h2{font-size:24px;letter-spacing:-.7px;margin:4px 0}
+.exercise-dialog-grid{display:grid;grid-template-columns:minmax(0,1.2fr) minmax(220px,.8fr);gap:18px;margin-top:18px}
+.exercise-visual{background:var(--surface2);border:1px solid var(--line);border-radius:16px;padding:12px;min-height:240px}
+.exercise-visual svg{width:100%;height:220px;display:block}
+.muscle-map{display:flex;gap:8px;justify-content:center;align-items:center}
+.muscle-map svg{width:46%;height:190px}
+.muscle-map .body-base{fill:#65717b;opacity:.35;stroke:#8c9aa6;stroke-width:2}
+.muscle-map .muscle-highlight{fill:#c8ff55;opacity:.95;stroke:#e0ff9b;stroke-width:1}
+.muscle-map .muscle-muted{fill:#7d8992;opacity:.28;stroke:#9ca7b0;stroke-width:1}
+.exercise-facts{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;margin:14px 0}
+.exercise-fact{background:var(--surface2);border-radius:11px;padding:10px}
+.exercise-fact small{display:block;color:var(--muted);font-size:9px;text-transform:uppercase;letter-spacing:1px}
+.exercise-fact b{display:block;font-size:12px;margin-top:4px}
+.exercise-section{margin:16px 0}
+.exercise-section h3{font-size:13px;margin:0 0 7px}
+.exercise-section p,.exercise-section li{font-size:12px;line-height:1.55;color:var(--muted)}
+.exercise-section ul{padding-left:18px;margin:0}
+.exercise-dialog-actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:16px}
+@media(max-width:760px){.library-list{grid-template-columns:1fr}.exercise-dialog{padding:16px}.exercise-dialog-grid{grid-template-columns:1fr}.exercise-visual{min-height:210px}.exercise-visual svg{height:190px}}
+
 </style>
 </head>
 <body>
@@ -173,7 +212,7 @@ body{background:radial-gradient(ellipse at 50% -25%,#1d2b1b 0,transparent 48%),v
 </section>
 <section id="libraryPage" class="page hidden">
  <div class="page-head"><div><div class="eyebrow">MOVEMENT DATABASE</div><h1>Exercise library.</h1><p>Browse the movements in your training plan.</p></div><span class="tiny muted" id="libraryCount"></span></div>
- <div class="library-controls"><input id="librarySearch" class="searchbox" placeholder="Search exercises or muscle groups..."><div class="filter-row" id="muscleFilters"></div></div><div class="library-list" id="libraryList"></div>
+ <div class="library-controls"><div class="library-toolbar"><input id="librarySearch" class="searchbox" placeholder="Search exercises, muscles or equipment..."><button class="btn primary" id="createCustomExercise">＋ Custom exercise</button></div><div class="filter-row" id="muscleFilters"></div><div class="library-filters"><select id="equipmentFilter" aria-label="Filter by equipment"><option value="All">All equipment</option></select><select id="difficultyFilter" aria-label="Filter by difficulty"><option value="All">All levels</option><option>Beginner</option><option>Intermediate</option><option>Advanced</option></select><button class="filter-chip" id="favoritesOnly">☆ Favorites</button></div></div><div class="library-list" id="libraryList"></div>
 </section>
 <section id="progressPage" class="page hidden">
  <div class="page-head"><div><div class="eyebrow">PERFORMANCE INSIGHTS</div><h1>Progress.</h1><p>Small improvements compound over time.</p></div></div>
@@ -206,6 +245,6 @@ body{background:radial-gradient(ellipse at 50% -25%,#1d2b1b 0,transparent 48%),v
  <button class="active" data-tab="home"><span>⌂</span>Home</button><button data-tab="workout"><span>▣</span>Train</button><button data-tab="library"><span>⌕</span>Library</button><button data-tab="progress"><span>↗</span>Progress</button><button data-tab="settings"><span>◉</span>Profile</button>
 </nav>
 <div id="timerOverlay" class="timer-overlay hidden"><div class="timer-box"><div class="eyebrow">RECOVERY TIMER</div><h2>REST & RESET</h2><strong id="timerValue">1:30</strong><div class="timer-actions"><button class="btn" id="timerMinus">−15s</button><button class="btn" id="timerPlus">+15s</button><button class="btn primary" id="timerClose">Close</button></div></div></div>
-<div id="toast" class="toast"></div>
+<div id="exerciseModal" class="exercise-modal hidden" role="dialog" aria-modal="true" aria-labelledby="exerciseModalTitle"><div class="exercise-dialog"><div class="exercise-dialog-head"><div><div class="eyebrow">EXERCISE GUIDE</div><h2 id="exerciseModalTitle">Exercise</h2><p id="exerciseModalSubtitle" class="tiny muted"></p></div><button class="btn" id="closeExerciseModal">Close ✕</button></div><div id="exerciseModalBody"></div></div></div><div id="toast" class="toast"></div>
 <script src="app.js"></script>
 </body></html>
