@@ -127,6 +127,18 @@ body{background:radial-gradient(ellipse at 50% -25%,#1d2b1b 0,transparent 48%),v
 }
 @media(min-width:761px){.bottom-nav{display:none}.app{padding-bottom:54px}}
 
+
+/* V5.2 workout engine */
+.set-head,.set-row{grid-template-columns:28px minmax(58px,1fr) minmax(48px,.8fr) 48px 48px 82px 30px;gap:6px}
+.set-row select,.set-row input[type=number]{width:100%;min-width:0;background:var(--surface2);border:1px solid var(--line);border-radius:9px;padding:9px 3px;color:var(--text);text-align:center;font-size:11px}
+.set-row select{font-size:9px;padding:9px 1px}
+.set-row.is-complete{background:#c8ff5508}
+.superset-strip{display:flex;justify-content:space-between;gap:8px;margin:9px 0 0;padding:8px 10px;border-radius:10px;background:#c8ff550d;border:1px solid #c8ff5520;font-size:10px;color:var(--accent)}
+.session-controls{display:flex;gap:7px;align-items:center;flex-wrap:wrap}
+.session-state{font-size:10px;color:var(--muted);margin-left:5px}
+.session-state.running{color:var(--good)}.session-state.paused{color:#ffbf69}
+@media(max-width:760px){.set-head,.set-row{grid-template-columns:22px minmax(48px,1fr) minmax(42px,.8fr) 38px 38px 70px 26px;gap:3px}.set-row select,.set-row input[type=number]{padding:8px 1px;font-size:10px}.workout-footer{align-items:flex-start;flex-direction:column}.workout-footer .session-controls{width:100%;justify-content:space-between}}
+
 </style>
 </head>
 <body>
@@ -157,7 +169,7 @@ body{background:radial-gradient(ellipse at 50% -25%,#1d2b1b 0,transparent 48%),v
  <div class="day-tabs" id="dayTabs"></div>
  <div class="workout-head"><div><h2 id="workoutTitle">PUSH + TRICEPS</h2><p id="workoutMeta">Exercises and working sets</p></div><div class="workout-actions"><button class="btn" id="renameDay">Rename day</button><button class="btn danger" id="deleteDay">Delete day</button><button class="btn primary" id="addExercise">＋ Exercise</button></div></div>
  <div id="workoutContent"></div>
- <div class="workout-footer"><span><span id="dayDone">0 sets done</span> · <b id="sessionClock" style="color:var(--accent)">0:00</b></span><button class="btn primary" id="finishWorkout">Finish session ✓</button></div>
+ <div class="workout-footer"><span><span id="dayDone">0 sets done</span> · <b id="sessionClock" style="color:var(--accent)">0:00</b><span id="sessionStatus" class="session-state">No active session</span></span><div class="session-controls"><button class="btn" id="pauseWorkout">Ⅱ Pause</button><button class="btn" id="resumeWorkout">▶ Resume</button><button class="btn danger" id="discardWorkout">Discard</button><button class="btn primary" id="finishWorkout">Finish session ✓</button></div></div>
 </section>
 <section id="libraryPage" class="page hidden">
  <div class="page-head"><div><div class="eyebrow">MOVEMENT DATABASE</div><h1>Exercise library.</h1><p>Browse the movements in your training plan.</p></div><span class="tiny muted" id="libraryCount"></span></div>
