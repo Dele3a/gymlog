@@ -185,6 +185,11 @@ body{background:radial-gradient(ellipse at 50% -25%,#1d2b1b 0,transparent 48%),v
 .chart-axis-note{font-size:10px;color:var(--muted);text-align:center;margin-top:5px}
 .record-sub{display:block;color:var(--muted);font-size:9px;margin-top:4px;font-weight:500}
 @media(max-width:760px){.analytics-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.analytics-card{min-width:0}.analytics-card strong{font-size:18px}}
+/* V5.5 progression intelligence */
+.progression-note{border-left:3px solid var(--accent)}
+.progression-note>b{display:block;font-size:12px;margin:4px 0;color:var(--text)}
+.progression-note p{line-height:1.5}
+.progression-reduce{border-left-color:var(--danger)}.progression-plateau{border-left-color:#e5b45f}.progression-verify,.progression-hold{border-left-color:#8da9c6}
 </style>
 </head>
 <body>
@@ -211,7 +216,7 @@ body{background:radial-gradient(ellipse at 50% -25%,#1d2b1b 0,transparent 48%),v
  </div>
 </section>
 <section id="workoutPage" class="page hidden">
- <div class="page-head"><div><div class="eyebrow">SESSION BUILDER</div><h1>Your workout.</h1><p>Track every set. Build every rep.</p></div><button class="btn" id="addDay">＋ Add day</button></div>
+ <div class="page-head"><div><div class="eyebrow">SESSION BUILDER</div><h1>Your workout.</h1><p>Track every set. Build every rep. Progress with evidence, not guesswork.</p></div><button class="btn" id="addDay">＋ Add day</button></div>
  <div class="day-tabs" id="dayTabs"></div>
  <div class="workout-head"><div><h2 id="workoutTitle">PUSH + TRICEPS</h2><p id="workoutMeta">Exercises and working sets</p></div><div class="workout-actions"><button class="btn" id="renameDay">Rename day</button><button class="btn danger" id="deleteDay">Delete day</button><button class="btn primary" id="addExercise">＋ Exercise</button></div></div>
  <div id="workoutContent"></div>
