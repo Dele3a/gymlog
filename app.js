@@ -41,24 +41,23 @@ function repdbMatch(x){
 function repdbImage(asset,pose){
  if(!asset||!asset.images||!asset.images.flat)return '';
  const f=asset.images.flat,path=f[pose]||f.peak||f.start||f.main;
- return path?(path.startsWith('http')?path:'https://exercise-dataset.com/'+path.replace(/^\\//,'')):'';
+ if(!path)return '';
+ if(path.startsWith('http'))return path;
+ return 'https://exercise-dataset.com/'+(path.charAt(0)==='/'?path.slice(1):path);
 }
 function muscleDisplay(s){return String(s||'').replace(/[_-]/g,' ').replace(/\\b\\w/g,c=>c.toUpperCase())}
 function exerciseEvidence(x){
- const asset=repdbMatch(x),mechanic=asset?.mechanic||(/press|row|squat|deadlift|pull.?up|pulldown/i.test(x.name)?'compound':'isolation');
- const primary=asset?.primary_muscles?.length?asset.primary_muscles.length:x.primary?.length||0;
- const equipment=String(x.equipment||'').toLowerCase();
- let fit=48+(primary?12:0)+(mechanic==='compound'?10:6);
- if(/machine|cable/.test(equipment))fit+=8;
- if(/barbell|dumbbell|smith/.test(equipment))fit+=7;
- if(/bodyweight/.test(equipment))fit+=5;
- if(asset?.instructions_en?.length)fit+=7;
- if(asset?.tips_en?.length)fit+=4;
- fit=Math.max(45,Math.min(92,fit));
- return {fit,label:fit>=78?'Strong practical pick':fit>=66?'Good option':'Context dependent',confidence:'High for resistance training · limited for this exact variation',explanation:'This score rewards clear target-muscle metadata, practical loading options and usable coaching information. It does not claim that this exercise outgrows other exercises. Choose the movement you can perform consistently, progress safely and load through a comfortable range.'};
+ const asset=repdbMatch(x),primary=asset?.primary_muscles?.length||x.primary?.length||0;
+ const equipment=String(x.equipment||'').toLowerCase(),mechanic=asset?.mechanic||(/press|row|squat|deadlift|pull.?up|pulldown/i.test(x.name)?'compound':'isolation');
+ const target=primary?30:12;
+ const loading=/barbell|dumbbell|cable|machine|smith|plate/.test(equipment)?25:/bodyweight/.test(equipment)?20:10;
+ const coaching=asset?.instructions_en?.length?(asset?.tips_en?.length?25:20):(x.instructions?.length?15:5);
+ const complete=(x.equipment?8:0)+(asset?.difficulty||x.difficulty?6:0)+(mechanic?6:0);
+ const fit=Math.max(0,Math.min(100,target+loading+coaching+complete));
+ return {fit,label:fit>=85?'Complete exercise reference':fit>=70?'Useful exercise reference':'Limited exercise data',confidence:'High for resistance training · limited for this exact variation',explanation:'This score measures the completeness and practical usefulness of the exercise record: target-muscle data, trackable loading, coaching instructions and movement metadata. It does not claim that this exercise produces more muscle growth than another.'};
 }
 function communitySummary(name){const ratings=state.exerciseRatings||{},v=ratings[name];return v?{count:1,average:Number(v)}:{count:0,average:0}}
-async function loadExerciseVisualData(){
+async async function loadExerciseVisualData(){
  try{const response=await fetch(REPDB_JSON,{mode:'cors'});if(!response.ok)throw Error('Dataset request failed');exerciseVisualData=await response.json();exerciseVisualStatus='ready';renderLibrary();}
  catch(e){exerciseVisualStatus='unavailable';renderLibrary();}
 }
