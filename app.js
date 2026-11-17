@@ -188,8 +188,8 @@ function muscleMapSvg(muscles){
  const primaryLabels=(muscles?.primary||muscles||[]).map(m=>String(m).toLowerCase().replace(/[_-]/g,' '));
  const secondaryLabels=(muscles?.secondary||[]).map(m=>String(m).toLowerCase().replace(/[_-]/g,' '));
  const groups={
-  chest:['chest','pectoralis','pectorals','pecs'],frontDelts:['front deltoid','anterior deltoid','deltoid anterior','shoulders'],sideDelts:['lateral deltoid','side deltoid','shoulders'],biceps:['biceps','brachialis'],forearms:['forearm','wrist flexor','wrist extensor'],abs:['abs','rectus abdominis','abdominals'],obliques:['oblique'],quads:['quadriceps','rectus femoris','vastus'],calves:['calves','gastrocnemius','soleus'],
-  traps:['trapezius','traps'],rearDelts:['rear deltoid','posterior deltoid'],lats:['latissimus','lats'],triceps:['triceps'],glutes:['glute','gluteus'],hamstrings:['hamstring','biceps femoris'],erectors:['erector spinae','spinal erector']
+  chest:['chest','pectoralis','pectorals','pecs'],frontDelts:['front deltoid','anterior deltoid','deltoid anterior','shoulders'],sideDelts:['lateral deltoid','side deltoid','shoulders'],biceps:['biceps','brachialis','arms'],forearms:['forearm','wrist flexor','wrist extensor'],abs:['abs','rectus abdominis','abdominals','core'],obliques:['oblique','core'],quads:['quadriceps','rectus femoris','vastus'],calves:['calves','gastrocnemius','soleus'],
+  traps:['trapezius','traps','back'],rearDelts:['rear deltoid','posterior deltoid','shoulders'],lats:['latissimus','lats','back'],triceps:['triceps','arms'],glutes:['glute','gluteus'],hamstrings:['hamstring','biceps femoris'],erectors:['erector spinae','spinal erector']
  };
  const match=(labels,k)=>labels.some(l=>groups[k].some(g=>l.includes(g)));
  const p=(k,d)=>{const cls=match(primaryLabels,k)?'primary-target':match(secondaryLabels,k)?'secondary-target':'';return '<path class="v6-muscle '+cls+'" d="'+d+'"/>'};
