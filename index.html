@@ -191,7 +191,7 @@ body{background:radial-gradient(ellipse at 50% -25%,#1d2b1b 0,transparent 48%),v
 .progression-note p{line-height:1.5}
 .progression-reduce{border-left-color:var(--danger)}.progression-plateau{border-left-color:#e5b45f}.progression-verify,.progression-hold{border-left-color:#8da9c6}
 
-/* V5.5.1 progress dashboard */
+/* V6.0 progress dashboard */
 .overall-hero{display:flex;justify-content:space-between;align-items:center;gap:18px;padding:22px;margin-bottom:14px;background:radial-gradient(circle at 90% 10%,#c4f36b20,transparent 38%),linear-gradient(135deg,var(--surface),var(--surface2));border-color:#c4f36b35}.overall-hero-copy{min-width:0}.overall-hero h2{font-size:clamp(18px,3vw,25px);letter-spacing:-.7px;margin:8px 0}.overall-hero p{font-size:11px;color:var(--muted);max-width:620px;margin:0}.streak-pill{flex:0 0 auto;display:grid;gap:2px;text-align:center;background:#c4f36b15;border:1px solid #c4f36b45;border-radius:16px;padding:13px 17px}.streak-pill strong{font-size:20px;color:var(--accent)}.streak-pill span{font-size:9px;color:var(--muted);text-transform:uppercase;letter-spacing:.8px}.overall-kpis{grid-template-columns:repeat(4,minmax(0,1fr))}.overall-kpis .analytics-card small{display:block;color:var(--muted);font-size:9px;margin-top:4px}.overall-bars{display:grid;grid-template-columns:repeat(8,minmax(0,1fr));gap:8px;align-items:end;min-height:190px;padding:12px 3px 0}.overall-week{display:flex;flex-direction:column;align-items:center;gap:5px;min-width:0;height:175px}.overall-bar-value{font-size:9px;color:var(--muted);height:13px}.overall-bar-track{height:115px;width:min(100%,38px);background:var(--surface3);border-radius:9px 9px 4px 4px;display:flex;align-items:flex-end;overflow:hidden}.overall-bar-track span{display:block;width:100%;background:linear-gradient(180deg,var(--accent),#83b83b);border-radius:8px 8px 3px 3px;min-height:0}.overall-week b{font-size:9px;white-space:nowrap}.overall-week small{font-size:8px;color:var(--muted);white-space:nowrap}.chart-legend{display:flex;justify-content:space-between;gap:8px;flex-wrap:wrap;margin-top:12px;color:var(--muted);font-size:9px}.chart-legend i{display:inline-block;width:8px;height:8px;border-radius:50%;background:var(--accent);margin-right:5px}.balance-row{display:grid;grid-template-columns:105px 1fr 26px;gap:10px;align-items:center;padding:8px 0;border-bottom:1px solid #ffffff0c;font-size:10px}.balance-row>div{height:8px;background:var(--surface3);border-radius:9px;overflow:hidden}.balance-row i{display:block;height:100%;background:linear-gradient(90deg,var(--accent2),var(--accent));border-radius:9px}.balance-row b{text-align:right;color:var(--accent)}.exercise-history{margin-top:12px;border-top:1px solid var(--line)}.exercise-history-row{display:grid;grid-template-columns:1.2fr auto auto;gap:12px;align-items:center;padding:10px 2px;border-bottom:1px solid #ffffff0c;font-size:10px}.exercise-history-row b,.exercise-history-row small{display:block}.exercise-history-row small{font-size:9px;color:var(--muted);margin-top:3px}.exercise-history-row strong{color:var(--text)}.exercise-history-row em{font-style:normal;color:var(--accent);font-size:9px;text-align:right}
 @media(max-width:760px){.overall-hero{align-items:flex-start;padding:16px}.streak-pill{padding:9px 10px}.streak-pill strong{font-size:16px}.overall-kpis{grid-template-columns:repeat(2,minmax(0,1fr))}.overall-bars{gap:4px}.overall-week{height:155px}.overall-bar-track{height:100px;width:min(100%,30px)}.overall-week b{font-size:8px}.overall-week small{font-size:7px}.exercise-history-row{grid-template-columns:1fr auto;gap:6px}.exercise-history-row em{grid-column:1/-1;text-align:left}.balance-row{grid-template-columns:85px 1fr 22px}}
 
@@ -214,6 +214,64 @@ select{background-color:#1c1d20;border:1px solid #3b3a3b;border-radius:10px;padd
 :focus-visible{outline:2px solid #d6b878!important;outline-offset:3px}button:disabled{opacity:.45;cursor:not-allowed;transform:none}@media(hover:hover){.card:hover{border-color:#d6b87822}}
 @media(max-width:760px){.app{padding-left:15px;padding-right:15px}.topbar{height:68px}.nav{top:68px;display:none}.page{padding-top:25px}.page-head{margin-bottom:19px}.page-head h1{font-size:34px}.card{padding:16px}.stat-card{padding:14px}.stat-value{font-size:27px}.today-top h2{font-size:22px}.lift-card{padding:14px}.workout-footer{bottom:80px;padding:9px;gap:8px}.workout-footer .session-controls{display:flex;flex-wrap:wrap;justify-content:flex-end;gap:5px}.workout-footer .btn{padding:8px 9px;font-size:9px}.library-item{gap:9px}.lib-icon{width:34px;height:34px}.bottom-nav{padding-top:10px}}
 @media(prefers-reduced-motion:reduce){*,*::before,*::after{scroll-behavior:auto!important;animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important}}
+
+/* V6 — evidence-led exercise library */
+.v6-library-item{gap:13px;align-items:center;padding:14px 2px}
+.lib-thumb{width:76px;height:76px;object-fit:contain;border-radius:14px;background:#f0eee9;flex:none}
+.lib-rating{min-width:74px;text-align:center;border-left:1px solid var(--line);padding-left:10px}
+.lib-rating b{display:block;color:var(--accent);font-size:17px;letter-spacing:-.5px}
+.lib-rating small{display:block;color:var(--muted);font-size:8px;line-height:1.2}
+.v6-detail-layout{display:grid;grid-template-columns:minmax(0,1.15fr) minmax(270px,.85fr);gap:16px}
+.v6-detail-main,.v6-detail-side{display:grid;align-content:start;gap:13px;min-width:0}
+.v6-visual-panel,.v6-info-panel,.v6-score-card{background:var(--surface);border:1px solid var(--line);border-radius:15px;padding:15px}
+.v6-section-kicker{font-size:9px;letter-spacing:1.5px;color:var(--accent);font-weight:900;margin-bottom:10px}
+.v6-poses{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+.v6-poses figure{margin:0;background:#f0eee9;border-radius:12px;overflow:hidden}
+.v6-poses img{width:100%;aspect-ratio:1;object-fit:contain;display:block}
+.v6-poses figcaption{text-align:center;color:#5b6267;font-size:9px;font-weight:850;letter-spacing:1px;padding:5px}
+.v6-muscle-panel{border-top:1px solid var(--line);margin-top:14px;padding-top:13px}
+.v6-muscle-panel>div:first-child b{display:block;font-size:13px}
+.v6-muscle-panel>div:first-child small{display:block;color:var(--muted);font-size:10px;margin-top:2px}
+.v6-anatomy{max-width:360px;margin:7px auto 0}
+.v6-anatomy svg{width:100%;height:auto;display:block}
+.v6-anatomy-label{fill:var(--muted);font-size:9px;font-weight:900;letter-spacing:1.5px}
+.v6-body{fill:#303b46;stroke:#73808b;stroke-width:1}
+.v6-muscle{fill:#53616d;stroke:#10161d;stroke-width:1.1;opacity:.85}
+.v6-muscle.primary-target{fill:#d6b878;stroke:#fff0c5;opacity:1}.v6-muscle.secondary-target{fill:#a98d5e;stroke:#e6cf9d;opacity:1}.v6-anatomy-legend i.secondary{background:#a98d5e}
+.v6-anatomy-legend{display:flex;justify-content:center;gap:15px;color:var(--muted);font-size:9px}
+.v6-anatomy-legend span{display:flex;align-items:center;gap:5px}
+.v6-anatomy-legend i{width:8px;height:8px;border-radius:50%;background:#53616d}
+.v6-anatomy-legend i.primary{background:#d6b878}
+.v6-info-panel h3{font-size:13px;margin:0 0 8px}
+.v6-info-panel h3:not(:first-child){margin-top:16px}
+.v6-info-panel ol,.v6-info-panel ul{padding-left:18px;margin:0;color:var(--muted);font-size:11px}
+.v6-info-panel li{margin:0 0 7px}
+.v6-score-card{background:linear-gradient(145deg,#1b1a16,#12171e);border-color:#8d784333}
+.v6-score{font-size:44px;line-height:1;color:#d6b878;font-weight:900;letter-spacing:-2px;margin:4px 0}
+.v6-score small{font-size:14px;color:var(--muted);letter-spacing:0}
+.v6-score-card>b{font-size:12px}
+.v6-score-card p,.v6-info-panel p{font-size:10px;color:var(--muted);line-height:1.55}
+.v6-evidence-line{display:flex;justify-content:space-between;border-top:1px solid var(--line);padding-top:9px;margin-top:10px;font-size:10px}
+.v6-evidence-line span{color:var(--muted)}
+.v6-disclaimer{display:block;color:var(--muted);font-size:9px;line-height:1.4;margin-top:10px}
+.v6-muscle-tags{display:flex;flex-wrap:wrap;gap:6px}
+.v6-muscle-tags span{border:1px solid var(--line);border-radius:30px;padding:5px 8px;color:var(--muted);font-size:9px}
+.v6-muscle-tags span.primary{border-color:#d6b87866;color:#d6b878;background:#d6b87812}
+.v6-fact-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:15px}
+.v6-fact-grid small{display:block;color:var(--muted);font-size:8px;letter-spacing:1px}
+.v6-fact-grid b{font-size:10px}
+.v6-community-score{font-size:22px;font-weight:900;color:var(--accent)}
+.v6-rate-row{display:flex;align-items:center;justify-content:space-between;gap:8px;margin:10px 0}
+.v6-rate-row label{font-size:10px;color:var(--muted)}
+.v6-rate-row select{background:var(--surface2);border:1px solid var(--line);color:var(--text);border-radius:8px;padding:8px;font-size:10px}
+.v6-attribution{font-size:9px;color:var(--muted);margin:12px 2px}
+.v6-attribution a{color:var(--accent)}
+.v6-no-image{padding:20px;background:var(--surface2);border-radius:12px;text-align:center}
+.v6-no-image svg{max-width:230px;width:100%}
+.v6-no-image p{font-size:10px;color:var(--muted)}
+@media(max-width:720px){.v6-detail-layout{grid-template-columns:1fr}.v6-detail-side{grid-row:1}.v6-library-item{flex-wrap:wrap}.lib-thumb{width:64px;height:64px}.lib-rating{margin-left:auto}.v6-poses{gap:7px}.v6-visual-panel,.v6-info-panel,.v6-score-card{padding:12px}}
+
+.v6-no-image{display:grid;place-items:center;gap:10px;min-height:190px;padding:22px;text-align:center;background:var(--surface2);border:1px dashed var(--line);border-radius:14px}.v6-image-placeholder{display:grid;place-items:center;width:100%;min-height:115px;color:var(--muted);font-size:10px;font-weight:800;letter-spacing:1.4px}.v6-no-image p{max-width:430px;margin:0;color:var(--muted);font-size:11px;line-height:1.5}.v6-poses figure.image-failed{display:none}.v6-credits{line-height:1.6}.v6-credits a{color:var(--accent)}
 </style>
 </head>
 <body>
@@ -248,10 +306,10 @@ select{background-color:#1c1d20;border:1px solid #3b3a3b;border-radius:10px;padd
 </section>
 <section id="libraryPage" class="page hidden">
  <div class="page-head"><div><div class="eyebrow">MOVEMENT DATABASE</div><h1>Exercise library.</h1><p>A considered catalogue of movements, equipment and variations.</p></div><span class="tiny muted" id="libraryCount"></span></div>
- <div class="library-controls"><div class="library-toolbar"><input id="librarySearch" class="searchbox" placeholder="Search exercises, muscles or equipment..."><button class="btn primary" id="createCustomExercise">＋ Custom exercise</button></div><div class="filter-row" id="muscleFilters"></div><div class="library-filters"><select id="equipmentFilter" aria-label="Filter by equipment"><option value="All">All equipment</option></select><select id="difficultyFilter" aria-label="Filter by difficulty"><option value="All">All levels</option><option>Beginner</option><option>Intermediate</option><option>Advanced</option></select><button class="filter-chip" id="favoritesOnly">☆ Favorites</button></div></div><div class="library-list" id="libraryList"></div>
+ <div class="library-controls"><div class="library-toolbar"><input id="librarySearch" class="searchbox" placeholder="Search exercises, muscles or equipment..."><button class="btn primary" id="createCustomExercise">＋ Custom exercise</button></div><div class="filter-row" id="muscleFilters"></div><div class="library-filters"><select id="librarySort" aria-label="Sort exercises"><option value="recommended">Recommended</option><option value="evidence">Selection fit</option><option value="alpha">A–Z</option></select><select id="equipmentFilter" aria-label="Filter by equipment"><option value="All">All equipment</option></select><select id="difficultyFilter" aria-label="Filter by difficulty"><option value="All">All levels</option><option>Beginner</option><option>Intermediate</option><option>Advanced</option></select><button class="filter-chip" id="favoritesOnly">☆ Favorites</button></div></div><div class="library-list" id="libraryList"></div>
 </section>
 <section id="progressPage" class="page hidden">
- <div class="page-head"><div><div class="eyebrow">PERFORMANCE INSIGHTS · V5.5.1</div><h1>Your progress.</h1><p>One view of your training, strength and consistency.</p></div></div>
+ <div class="page-head"><div><div class="eyebrow">PERFORMANCE INSIGHTS · V6.0</div><h1>Your progress.</h1><p>One view of your training, strength and consistency.</p></div></div>
  <div class="overall-hero card"><div class="overall-hero-copy"><span class="eyebrow">YOUR TRAINING SNAPSHOT</span><h2>Progress is built session by session.</h2><p id="overallSummary">Your overall training summary will appear after your first completed workout.</p></div><div class="streak-pill"><strong id="overallStreak">0 days</strong><span>Current streak</span></div></div>
  <div class="grid analytics-grid overall-kpis"><div class="stat-card analytics-card"><span>SESSIONS · 30 DAYS</span><strong id="overallSessions">0</strong><small id="overallSessionsNote">Recent training frequency</small></div><div class="stat-card analytics-card"><span>WORKING SETS · 30 DAYS</span><strong id="overallSets">0</strong><small>Completed sets only</small></div><div class="stat-card analytics-card"><span>LOADED VOLUME · 30 DAYS</span><strong id="overallVolume">0</strong><small id="overallVolumeNote">Load × reps</small></div><div class="stat-card analytics-card"><span>ACTIVE DAYS · 30 DAYS</span><strong id="overallDays">0 / 30</strong><small>Days with a completed session</small></div></div>
  <div class="card chart-card"><div class="card-head"><div><h2>Overall training trend</h2><p class="tiny muted">Eight weeks of loaded volume and session frequency</p></div><span class="eyebrow">8 WEEKS</span></div><div id="overallTrend"><div class="chart-empty">Your weekly trend will appear after you log workouts.</div></div></div>
@@ -273,12 +331,13 @@ select{background-color:#1c1d20;border:1px solid #3b3a3b;border-radius:10px;padd
  <div class="card settings-list">
   <div class="setting-row"><div><b>Weight units</b><small>Convert saved weights between kilograms and pounds.</small></div><button class="btn setting-value" id="unitBtn"><span id="unitSetting">KG</span></button></div>
   <div class="setting-row"><div><b>Appearance</b><small>Switch between dark and light mode.</small></div><button class="btn setting-value" id="themeBtn"><span id="themeSetting">Dark</span></button></div>
+  <div class="setting-row"><div><b>Exercise reference data</b><small>Exercise data by RepDB (repdb.co).</small></div><a class="btn" href="https://github.com/RepDB/exercise-dataset" target="_blank" rel="noopener">View source</a></div>
   <div class="setting-row"><div><b>Workout history</b><small>Review completed sessions and training logs.</small></div><button class="btn" data-tab="history">Open history</button></div>
   <div class="setting-row"><div><b>Export backup</b><small>Download your routine, history and logged sets.</small></div><button class="btn" id="exportBtn2">Export JSON</button></div>
   <div class="setting-row"><div><b>Restore backup</b><small>Restore a previous GYMLOG backup file.</small></div><label class="btn" for="importInput">Choose file</label><input id="importInput" type="file" accept="application/json" hidden></div>
   <div class="setting-row"><div><b>Clear workout history</b><small>Remove completed sessions. This cannot be undone.</small></div><button class="btn danger" id="clearHistory">Clear history</button></div>
  </div>
- <p class="tiny muted" style="margin-top:16px">Your data is saved locally on this device. Export a backup before changing phones or clearing browser data.</p>
+ <p class="tiny muted" style="margin-top:16px">Your data is saved locally on this device. Export a backup before changing phones or clearing browser data.</p><p class="tiny muted v6-credits">Exercise data by <a href="https://repdb.co/" target="_blank" rel="noopener">RepDB (repdb.co)</a>. Visual references are loaded from the RepDB free dataset; unmatched variations are not shown with substitute images.</p>
 </section>
 </main>
 </div>
