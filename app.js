@@ -25,25 +25,26 @@ if(!days){days=normalizeDays(defaults);if(Array.isArray(state.routine)&&state.ro
 let day=Math.max(0,Math.min(Number(state.day)||0,days.length-1)),tab='home',filter='All',search='',timer=null,remaining=0,sessionStart=null,sessionSeconds=0,sessionTicker=null;
 const SET_TYPES=[['working','Working'],['warmup','Warm-up'],['backoff','Back-off'],['drop','Drop'],['failure','Failure'],['rest-pause','Rest-pause'],['custom','Custom']];
 let activeSession=state.activeSession||null;
-// V6 exercise reference data: illustrations are loaded from the licensed RepDB public dataset.
+// RepDB free-tier exercise library. Loaded from the versioned npm CDN (CORS-enabled).
 let exerciseVisualData=null,exerciseVisualStatus='loading';
-const REPDB_JSON='https://exercise-dataset.com/exercises.json';
+const REPDB_VERSION='2026.11.1';
+const REPDB_JSON='https://cdn.jsdelivr.net/npm/@repdb/exercises@'+REPDB_VERSION+'/exercises.json';
 function normalizeExerciseName(s){return String(s||'').toLowerCase().normalize('NFKD').replace(/[\u0300-\u036f]/g,'').replace(/[^a-z0-9]+/g,' ').replace(/\s+/g,' ').trim()}
-function repdbMatch(x){
- if(!exerciseVisualData||!Array.isArray(exerciseVisualData.exercises))return null;
- const q=normalizeExerciseName(x.name);
- if(!q)return null;
- // Exact names only: fuzzy matches can show the wrong technique or equipment variation.
- return exerciseVisualData.exercises.find(z=>normalizeExerciseName(z.name_en||z.name)===q)||null;
-}
+function repdbRecords(payload){return Array.isArray(payload)?payload:(payload&&Array.isArray(payload.exercises)?payload.exercises:null)}
+function repdbMatch(x){if(!exerciseVisualData||!Array.isArray(exerciseVisualData.exercises))return null;const q=normalizeExerciseName(x.name);if(!q)return null;return exerciseVisualData.exercises.find(z=>normalizeExerciseName(z.name_en||z.name)===q)||null}
 function repdbImage(asset,pose){
- if(!asset||!asset.images||!asset.images.flat)return '';
- const f=asset.images.flat,path=f[pose]||f.main||f.peak||f.start;
+ if(!asset)return '';
+ const field=pose==='start'?'image_flat_start':pose==='peak'?'image_flat_peak':'image_flat_main';
+ const path=asset[field]||asset.image_flat_main||(pose==='start'?asset.image_flat_peak:asset.image_flat_start);
  if(!path)return '';
- if(/^https:\/\//i.test(path))return path;
- const clean=String(path).replace(/^\.\//,'').replace(/^\//,'');
- return 'https://exercise-dataset.com/'+clean;
+ if(/^https?:\/\//i.test(path))return path;
+ return 'https://cdn.jsdelivr.net/npm/@repdb/exercises@'+REPDB_VERSION+'/'+String(path).replace(/^\.\//,'').replace(/^\//,'');
 }
+function repdbMuscleGroup(asset){
+ const raw=Array.isArray(asset.primary_muscles)?asset.primary_muscles[0]:asset.primary_muscles,m=String(raw||asset.body_part||'').toLowerCase();
+ if(/chest|pectoral/.test(m))return 'Chest';if(/lat|back|trap|rhomboid/.test(m))return 'Back';if(/biceps/.test(m))return 'Biceps';if(/triceps/.test(m))return 'Triceps';if(/deltoid|shoulder/.test(m))return 'Shoulders';if(/quad|thigh/.test(m))return 'Quadriceps';if(/hamstring/.test(m))return 'Hamstrings';if(/glute/.test(m))return 'Glutes';if(/calf|soleus|gastrocnemius/.test(m))return 'Calves';if(/abdom|oblique|core/.test(m))return 'Core';if(/forearm/.test(m))return 'Forearms';return 'Other';
+}
+function repdbEquipment(asset){const raw=asset.equipment;return Array.isArray(raw)?(raw.length?raw.join(', '):'Bodyweight'):(raw||'Bodyweight')}
 function muscleDisplay(s){return String(s||'').replace(/[_-]/g,' ').replace(/\b\w/g,c=>c.toUpperCase())}
 function exerciseEvidence(x){
  const asset=repdbMatch(x),primaryCount=asset?.primary_muscles?.length||x.primary?.length||0;
@@ -59,14 +60,12 @@ function exerciseEvidence(x){
 function communitySummary(name){const ratings=state.exerciseRatings||{},v=ratings[name];return v?{count:1,average:Number(v)}:{count:0,average:0}}
 async function loadExerciseVisualData(){
  try{
-  const response=await fetch(REPDB_JSON,{mode:'cors',credentials:'omit'});
-  if(!response.ok)throw Error('Dataset request failed: '+response.status);
-  const payload=await response.json();
-  const records=Array.isArray(payload)?payload:Array.isArray(payload.exercises)?payload.exercises:null;
-  if(!records||!records.length||!records.every(x=>x&&typeof (x.name_en||x.name)==='string'))throw Error('Unexpected RepDB dataset schema');
-  exerciseVisualData={exercises:records};
-  exerciseVisualStatus='ready';
- }catch(e){exerciseVisualData=null;exerciseVisualStatus='unavailable';}
+  const response=await fetch(REPDB_JSON,{mode:'cors',credentials:'omit',cache:'force-cache'});
+  if(!response.ok)throw Error('RepDB CDN request failed: '+response.status);
+  const records=repdbRecords(await response.json());
+  if(!records||records.length!==708||!records.every(x=>x&&typeof x.name_en==='string'&&x.id))throw Error('Unexpected RepDB schema or incomplete catalogue');
+  exerciseVisualData={exercises:records};exerciseVisualStatus='ready';
+ }catch(e){exerciseVisualData=null;exerciseVisualStatus='unavailable';console.warn('GYMLOG RepDB library unavailable:',e)}
  renderLibrary();
 }
 
@@ -172,9 +171,19 @@ function startTimer(n){clearInterval(timer);remaining=n;$('timerOverlay').classL
 function tick(){ $('timerValue').textContent=formatTime(Math.max(0,remaining)) }
 function libraryItems(){
  const map=new Map();
- (window.GYMLOG_EXERCISES||[]).forEach(x=>{const k=x.name.toLowerCase();if(!map.has(k))map.set(k,Object.assign({},x,{source:'catalog'}))});
- allExercises().forEach(x=>{const k=x.name.toLowerCase();map.set(k,Object.assign({},map.get(k)||{},x,{source:'routine'}))});
- (state.customExercises||[]).forEach(x=>{const k=x.name.toLowerCase();map.set(k,Object.assign({sets:3,min:8,max:12,unit:'reps',rest:90},map.get(k)||{},x,{source:'custom'}))});
+ (window.GYMLOG_EXERCISES||[]).forEach(x=>{const k=normalizeExerciseName(x.name);if(!map.has(k))map.set(k,Object.assign({},x,{source:'catalog'}))});
+ allExercises().forEach(x=>{const k=normalizeExerciseName(x.name);map.set(k,Object.assign({},map.get(k)||{},x,{source:'routine'}))});
+ (state.customExercises||[]).forEach(x=>{const k=normalizeExerciseName(x.name);map.set(k,Object.assign({sets:3,min:8,max:12,unit:'reps',rest:90},map.get(k)||{},x,{source:'custom'}))});
+ // Add every RepDB movement not already represented by an identical name; saved names remain unchanged.
+ if(exerciseVisualData&&Array.isArray(exerciseVisualData.exercises))exerciseVisualData.exercises.forEach(a=>{
+  const name=String(a.name_en||'').trim(),k=normalizeExerciseName(name);if(!name||map.has(k))return;
+  const muscle=repdbMuscleGroup(a),equipment=repdbEquipment(a),difficulty=String(a.difficulty||'Intermediate');
+  const primary=Array.isArray(a.primary_muscles)?a.primary_muscles.map(muscleDisplay):[muscle];
+  const secondary=Array.isArray(a.secondary_muscles)?a.secondary_muscles.map(muscleDisplay):[];
+  const instructions=Array.isArray(a.instructions_en)?a.instructions_en:(a.instructions_en?[a.instructions_en]:[]);
+  const tips=Array.isArray(a.tips_en)?a.tips_en:(a.tips_en?[a.tips_en]:[]);
+  map.set(k,{id:'repdb-'+a.id,name,muscle,equipment,sets:3,min:8,max:12,unit:'reps',rest:90,difficulty,primary,secondary,instructions,mistakes:tips,alternatives:[],source:'repdb',repdbId:a.id});
+ });
  return Array.from(map.values()).map(x=>Object.assign(x,exerciseMeta(x)));
 }
 function exerciseMeta(x){
@@ -255,7 +264,7 @@ function renderLibrary(){
  else if(sort==='evidence')matches.sort((a,b)=>exerciseEvidence(b).fit-exerciseEvidence(a).fit||a.name.localeCompare(b.name));
  else matches.sort((a,b)=>exerciseEvidence(b).fit-exerciseEvidence(a).fit||a.name.localeCompare(b.name));
  const matched=matches.filter(x=>!!repdbMatch(x)).length;
- $('libraryCount').textContent=matches.length+' exercises · '+matched+' exact visual matches'+(exerciseVisualStatus==='loading'?' · loading data':exerciseVisualStatus==='unavailable'?' · reference data offline':'');
+ $('libraryCount').textContent=matches.length+' exercises · '+matched+' illustrated matches'+(exerciseVisualStatus==='loading'?' · loading data':exerciseVisualStatus==='unavailable'?' · reference data offline':'');
  $('libraryList').innerHTML=matches.map(x=>{const ev=exerciseEvidence(x),asset=repdbMatch(x),img=asset?repdbImage(asset,'peak'):'',thumb=img?'<img class="lib-thumb" src="'+img+'" alt="'+escapeHtml(x.name)+' exercise illustration" loading="lazy" onerror="this.style.display=\'none\'">':'<div class="lib-icon">'+escapeHtml(x.muscle.slice(0,2).toUpperCase())+'</div>';return '<article class="library-item v6-library-item">'+thumb+'<div class="lib-info"><b>'+escapeHtml(x.name)+'</b><span>'+escapeHtml(x.muscle)+' · '+escapeHtml(x.equipment)+' · '+escapeHtml(x.difficulty)+'</span><span>'+x.sets+' × '+x.min+'–'+x.max+' · '+escapeHtml(x.primary.join(', '))+'</span></div><div class="lib-rating"><b>'+ev.fit+'/100</b><small>'+ev.label+'</small></div><div class="lib-actions"><button data-detail="'+escapeHtml(x.name)+'">Explore</button><button class="fav" data-fav="'+escapeHtml(x.name)+'">'+(favorites.includes(x.name)?'★':'☆')+'</button><button data-add="'+escapeHtml(x.name)+'">＋</button></div></article>'}).join('')||'<div class="empty-state">No exercises match those filters.</div>';
  $('libraryList').querySelectorAll('[data-detail]').forEach(b=>b.onclick=()=>openExerciseDetails(b.dataset.detail));
  $('libraryList').querySelectorAll('[data-fav]').forEach(b=>b.onclick=()=>toggleLibraryFavorite(b.dataset.fav));
