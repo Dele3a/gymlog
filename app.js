@@ -184,7 +184,7 @@ function libraryItems(){
   const tips=Array.isArray(a.tips_en)?a.tips_en:(a.tips_en?[a.tips_en]:[]);
   map.set(k,{id:'repdb-'+a.id,name,muscle,equipment,sets:3,min:8,max:12,unit:'reps',rest:90,difficulty,primary,secondary,instructions,mistakes:tips,alternatives:[],source:'repdb',repdbId:a.id});
  });
- return Array.from(map.values()).map(x=>Object.assign(x,exerciseMeta(x)));
+ return Array.from(map.values()).map(x=>{const meta=exerciseMeta(x);return x.source==='repdb'?Object.assign(meta,x):Object.assign(x,meta)});
 }
 function exerciseMeta(x){
  const n=x.name.toLowerCase(),m=x.muscle,meta={primary:[m],secondary:[],difficulty:'Intermediate',instructions:['Set up the equipment and adopt a stable starting position.','Move through a controlled range of motion without bouncing.','Keep the target muscles engaged and avoid using momentum.','Return to the start position under control.'],mistakes:['Using momentum to move the load.','Cutting the range of motion short.','Losing a stable torso or joint position.'],alternatives:[],pattern:'general'};
