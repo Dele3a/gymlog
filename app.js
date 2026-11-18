@@ -58,15 +58,27 @@ function exerciseEvidence(x){
  return {fit,label:fit>=85?'High selection fit':fit>=72?'Good selection fit':'Context-dependent option',confidence:'Strong evidence for resistance training overall · limited for this exact variation',explanation:'This evidence-informed heuristic considers target-muscle specificity, progressive-loading practicality, setup stability, available range-of-motion tags and coaching detail. It is a decision aid, not a measured hypertrophy effect or proof that one exercise is universally superior.'};
 }
 function communitySummary(name){const ratings=state.exerciseRatings||{},v=ratings[name];return v?{count:1,average:Number(v)}:{count:0,average:0}}
-async function loadExerciseVisualData(){
+async function fetchRepdbSource(url){
+ const controller=new AbortController(),timeout=setTimeout(()=>controller.abort(),12000);
  try{
-  const response=await fetch(REPDB_JSON,{mode:'cors',credentials:'omit',cache:'force-cache'});
-  if(!response.ok)throw Error('RepDB CDN request failed: '+response.status);
+  const response=await fetch(url,{mode:'cors',credentials:'omit',cache:'no-store',signal:controller.signal});
+  if(!response.ok)throw Error('RepDB request failed: '+response.status);
   const records=repdbRecords(await response.json());
   if(!records||records.length!==708||!records.every(x=>x&&typeof x.name_en==='string'&&x.id))throw Error('Unexpected RepDB schema or incomplete catalogue');
-  exerciseVisualData={exercises:records};exerciseVisualStatus='ready';
- }catch(e){exerciseVisualData=null;exerciseVisualStatus='unavailable';console.warn('GYMLOG RepDB library unavailable:',e)}
- renderLibrary();
+  return records;
+ }finally{clearTimeout(timeout)}
+}
+async function loadExerciseVisualData(){
+ exerciseVisualStatus='loading';renderLibrary();
+ const sources=[REPDB_JSON,'https://exercise-dataset.com/exercises.json'];
+ let lastError=null;
+ for(const source of sources){
+  try{
+   const records=await fetchRepdbSource(source);
+   exerciseVisualData={exercises:records};exerciseVisualStatus='ready';renderLibrary();return;
+  }catch(e){lastError=e;console.warn('GYMLOG RepDB source failed:',source,e)}
+ }
+ exerciseVisualData=null;exerciseVisualStatus='unavailable';console.warn('GYMLOG RepDB library unavailable:',lastError);renderLibrary();
 }
 
 if(activeSession&&activeSession.dayId){const found=days.findIndex(d=>d.id===activeSession.dayId);if(found>=0)day=found;else activeSession=null;}
