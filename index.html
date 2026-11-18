@@ -270,6 +270,8 @@ select{background-color:#1c1d20;border:1px solid #3b3a3b;border-radius:10px;padd
 .v6-no-image svg{max-width:230px;width:100%}
 .v6-no-image p{font-size:10px;color:var(--muted)}
 @media(max-width:720px){.v6-detail-layout{grid-template-columns:1fr}.v6-detail-side{grid-row:1}.v6-library-item{flex-wrap:wrap}.lib-thumb{width:64px;height:64px}.lib-rating{margin-left:auto}.v6-poses{gap:7px}.v6-visual-panel,.v6-info-panel,.v6-score-card{padding:12px}}
+
+.v6-no-image{display:grid;place-items:center;gap:10px;min-height:190px;padding:22px;text-align:center;background:var(--surface2);border:1px dashed var(--line);border-radius:14px}.v6-image-placeholder{display:grid;place-items:center;width:100%;min-height:115px;color:var(--muted);font-size:10px;font-weight:800;letter-spacing:1.4px}.v6-no-image p{max-width:430px;margin:0;color:var(--muted);font-size:11px;line-height:1.5}.v6-poses figure.image-failed{display:none}.v6-credits{line-height:1.6}.v6-credits a{color:var(--accent)}
 </style>
 </head>
 <body>
@@ -335,7 +337,7 @@ select{background-color:#1c1d20;border:1px solid #3b3a3b;border-radius:10px;padd
   <div class="setting-row"><div><b>Restore backup</b><small>Restore a previous GYMLOG backup file.</small></div><label class="btn" for="importInput">Choose file</label><input id="importInput" type="file" accept="application/json" hidden></div>
   <div class="setting-row"><div><b>Clear workout history</b><small>Remove completed sessions. This cannot be undone.</small></div><button class="btn danger" id="clearHistory">Clear history</button></div>
  </div>
- <p class="tiny muted" style="margin-top:16px">Your data is saved locally on this device. Export a backup before changing phones or clearing browser data.</p>
+ <p class="tiny muted" style="margin-top:16px">Your data is saved locally on this device. Export a backup before changing phones or clearing browser data.</p><p class="tiny muted v6-credits">Exercise data by <a href="https://repdb.co/" target="_blank" rel="noopener">RepDB (repdb.co)</a>. Visual references are loaded from the RepDB free dataset; unmatched variations are not shown with substitute images.</p>
 </section>
 </main>
 </div>
