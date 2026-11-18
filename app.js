@@ -34,8 +34,8 @@ function repdbRecords(payload){return Array.isArray(payload)?payload:(payload&&A
 function repdbMatch(x){if(!exerciseVisualData||!Array.isArray(exerciseVisualData.exercises))return null;const q=normalizeExerciseName(x.name);if(!q)return null;return exerciseVisualData.exercises.find(z=>normalizeExerciseName(z.name_en||z.name)===q)||null}
 function repdbImage(asset,pose){
  if(!asset)return '';
- const field=pose==='start'?'image_flat_start':pose==='peak'?'image_flat_peak':'image_flat_main';
- const path=asset[field]||asset.image_flat_main||(pose==='start'?asset.image_flat_peak:asset.image_flat_start);
+ const flat=asset.images&&asset.images.flat||{};
+ const path=flat[pose]||flat.main||flat.peak||flat.start||asset.image_flat_main||asset.image_flat_peak||asset.image_flat_start;
  if(!path)return '';
  if(/^https?:\/\//i.test(path))return path;
  return 'https://cdn.jsdelivr.net/npm/@repdb/exercises@'+REPDB_VERSION+'/'+String(path).replace(/^\.\//,'').replace(/^\//,'');
