@@ -70,7 +70,7 @@ async function fetchRepdbSource(url){
 }
 async function loadExerciseVisualData(){
  exerciseVisualStatus='loading';renderLibrary();
- const sources=[REPDB_JSON,'https://exercise-dataset.com/exercises.json'];
+ const sources=[REPDB_JSON,'https://unpkg.com/@repdb/exercises@'+REPDB_VERSION+'/exercises.json'];
  let lastError=null;
  for(const source of sources){
   try{
